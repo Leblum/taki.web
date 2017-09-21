@@ -23,7 +23,8 @@ export class AlertComponent {
                     message: message.text
                 }, {
                         type: NotificationType[message.notificationType],
-                        timer: 4000,
+                        delay: this.calculateTimerDelay(message),
+                        timer: this.calculateTimerDelay(message),
                         placement: {
                             from: 'top',
                             align: 'center'
@@ -31,6 +32,23 @@ export class AlertComponent {
                     });
             }
         });
+    }
+
+    calculateTimerDelay(message: IMessage): number{
+        if (message && message.notificationType) {
+            switch (+message.notificationType) {
+                case NotificationType.danger:
+                    return 5000;
+                case NotificationType.info:
+                    return 1000;
+                case NotificationType.warning:
+                    return 2000;
+                case NotificationType.success:
+                    return 1000;
+                default:
+                    return 1000;
+            }
+        }
     }
 
     calculateIcon(message: IMessage) {

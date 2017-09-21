@@ -17,22 +17,22 @@
                             <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" id="productTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>{{ tableHeaders.headerRow[0] }}</th>
-                                        <th>{{ tableHeaders.headerRow[1] }}</th>
-                                        <th>{{ tableHeaders.headerRow[2] }}</th>
-                                        <th>{{ tableHeaders.headerRow[3] }}</th>
-                                        <th>{{ tableHeaders.headerRow[4] }}</th>
-                                        <th class="disabled-sorting">{{ tableHeaders.headerRow[5] }}</th>
+                                        <th>{{ headers[0] }}</th>
+                                        <th>{{ headers[1] }}</th>
+                                        <th>{{ headers[2] }}</th>
+                                        <th>{{ headers[3] }}</th>
+                                        <th>{{ headers[4] }}</th>
+                                        <th class="disabled-sorting">{{ headers[5] }}</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
                                     <tr>
-                                        <th>{{ tableHeaders.footerRow[0] }}</th>
-                                        <th>{{ tableHeaders.footerRow[1] }}</th>
-                                        <th>{{ tableHeaders.footerRow[2] }}</th>
-                                        <th>{{ tableHeaders.footerRow[3] }}</th>
-                                        <th>{{ tableHeaders.footerRow[4] }}</th>
-                                        <th>{{ tableHeaders.footerRow[5] }}</th>
+                                        <th>{{ headers[0] }}</th>
+                                        <th>{{ headers[1] }}</th>
+                                        <th>{{ headers[2] }}</th>
+                                        <th>{{ headers[3] }}</th>
+                                        <th>{{ headers[4] }}</th>
+                                        <th>{{ headers[5] }}</th>
                                     </tr>
                                 </tfoot>
                                 <tbody>
@@ -43,8 +43,8 @@
                                         <td>{{product.createdAt}}</td>
                                         <td>{{product.updatedAt}}</td>
                                         <td>
-                                            <button class="btn btn-simple btn-info btn-icon edit"><i class="ti-pencil-alt"></i></button>
-                                            <button class="btn btn-simple btn-danger btn-icon remove"><i class="ti-close"></i></button>
+                                            <button class="btn btn-simple btn-info btn-icon edit" (click)="edit(product._id)"><i class="ti-pencil-alt"></i></button>
+                                            <button class="btn btn-simple btn-danger btn-icon remove" (click)="delete(product._id)"><i class="ti-close"></i></button>
                                         </td>
                                     </tr>
                                 </tbody>

@@ -1,16 +1,14 @@
 import { Component, OnInit, NgZone, OnChanges, ChangeDetectorRef, SimpleChanges, ViewChild } from '@angular/core';
-import { ProductService } from '../../../services/index';
+import { ProductService, AlertService } from '../../../services/index';
 import { IProduct } from '../../../models/index';
 import { ErrorEventBus } from '../../../event-buses/error.event-bus';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
+import { NotificationType } from '../../../enumerations';
 declare let $: any;
 
-declare interface Headers {
-  headerRow: string[];
-  footerRow: string[];
-}
+
 
 @Component({
   selector: 'app-product-list',
@@ -18,6 +16,7 @@ declare interface Headers {
   styleUrls: ['./product-list.component.scss']
 })
 export class ProductListComponent implements OnInit {
+  public headers: string[] = ['Id', 'Display Name', 'Is Template?', 'Created At', 'Updated At', 'Actions']
   public products: IProduct[];
   public productTable;
   dtOptions: DataTables.Settings = {};
@@ -25,32 +24,17 @@ export class ProductListComponent implements OnInit {
   dtElement: DataTableDirective;
   dtTrigger: Subject<any> = new Subject();
 
-  public tableHeaders : Headers = {
-    headerRow: ['Id', 'Display Name', 'Is Template?', 'Created At', 'Updated At', 'Actions'],
-    footerRow: ['Id', 'Display Name', 'Is Template?', 'Created At', 'Updated At', 'Actions']
-  };
-
-  constructor(public productService: ProductService, private errorEventBus: ErrorEventBus, private router: Router) { }
+  constructor(public productService: ProductService, private alertService: AlertService, private errorEventBus: ErrorEventBus, private router: Router) { }
 
   ngOnInit() {
-
-    // When this control starts, go get the entities.
-    this.productService.getList<IProduct>().subscribe(products => {
-      this.products = products;
-      this.rerender();
-      this.dtOptions = {
-        pagingType: 'full_numbers'
-      };
-    }, error => {
-      this.errorEventBus.throw(error);
-    });
+    this.getProducts();
   }
 
   ngAfterViewInit(): void {
     this.dtTrigger.next();
   }
 
-  rerender(): void {
+  rerenderDataTable(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();
@@ -62,8 +46,39 @@ export class ProductListComponent implements OnInit {
   createProduct() {
     this.router.navigate(['dashboard/products/detail?new=true']);
   }
-   
 
+  delete(id: string){
+    // Hit the product service, and delete it.
+    console.log(`Deleting id: ${id}`);
+    this.productService.delete(id).subscribe((response)=>{
+      console.log(response);
+      this.alertService.send({text: "Product Successfully Deleted", notificationType: NotificationType.success});
+      this.getProducts();
+    },error => {
+      this.errorEventBus.throw(error);
+    });
+  }
+
+  edit(id: string){
+    this.router.navigate(['dashboard/products/detail/',id]);
+  }
+   
+  getProducts(){
+    // When this control starts, go get the entities.
+    this.productService.getList<IProduct>().subscribe(products => {
+      this.products = products;
+      this.rerenderDataTable();
+      this.dtOptions = {
+        pagingType: 'full_numbers',
+        search: {
+          searchPlaceholder: 'Search Products',
+          caseInsensitive: true
+        }
+      };
+    }, error => {
+      this.errorEventBus.throw(error);
+    });
+  }
     // // Iniitialize the table.
     // let table = $('#datatables').DataTable();
 

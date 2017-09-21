@@ -6,6 +6,7 @@ import { DataTablesModule } from 'angular-datatables';
 import { OverviewComponent } from './overview/overview.component';
 import { DashboardRoutes } from './dashboard.routing';
 import { ProductListComponent } from './product-list/product-list.component';
+import { ProductDetailComponent } from './product-detail/product-detail.component';
 
 @NgModule({
     imports: [
@@ -14,7 +15,7 @@ import { ProductListComponent } from './product-list/product-list.component';
         FormsModule,
         DataTablesModule
     ],
-    declarations: [OverviewComponent, ProductListComponent]
+    declarations: [OverviewComponent, ProductListComponent, ProductDetailComponent]
 })
 
 export class DashboardModule {}

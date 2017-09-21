@@ -39,6 +39,7 @@ RUN npm rebuild bcrypt --build-from-source
 RUN cd /usr/app/client && npm install
 
 # TODO Remove angular folder from within datatables.net in node_modules.  There's a stack overflow link in your favorites
+# which explains why we're doing this.  It's dumb. https://stackoverflow.com/questions/45468663/unexpected-value-datatablesmodule-imported-by-the-module-appmodule-please-a/46154376#46154376
 RUN cd /usr/app/client/node_modules/angular-datatables && rm -rf node_modules
 
 # copy eveything over
@@ -49,8 +50,6 @@ RUN cd /usr/app/client && npm run prodbuild
 RUN cd /usr/app/client && npm run stagebuild
 RUN cd /usr/app/client && npm run testbuild
 RUN cd /usr/app/client && npm run devbuild
-
-
 
 # build the server
 RUN gulp build 
