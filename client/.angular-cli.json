@@ -46,7 +46,10 @@
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
-        "dev": "environments/environment.ts",
+        "dev": "environments/environment.dev.ts",
+        "local": "environments/environment.local.ts",
+        "test": "environments/environment.test.ts",
+        "stage": "environments/environment.stage.ts",
         "prod": "environments/environment.prod.ts"
       }
     }
