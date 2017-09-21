@@ -10,8 +10,8 @@ export class AuthGuard implements CanActivate {
     constructor(private router: Router, private alertService: AlertService) { }
  
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        if (localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION)) {
-            let token = JSON.parse(localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION));
+        if (localStorage.getItem(CONST.CLIENT_DECODED_TOKEN_LOCATION)) {
+            let token = JSON.parse(localStorage.getItem(CONST.CLIENT_DECODED_TOKEN_LOCATION));
 
             if(token && token.roles && token.roles.indexOf('admin') >= 0){
                 return true;

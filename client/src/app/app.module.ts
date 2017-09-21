@@ -9,17 +9,17 @@ import { BaseRequestOptions } from '@angular/http';
 import { AppComponent }   from './app.component';
 
 import { SidebarModule } from './sidebar/sidebar.module';
-import { FixedPluginModule } from './shared/fixedplugin/fixedplugin.module';
 import { FooterModule } from './shared/footer/footer.module';
 import { NavbarModule} from './shared/navbar/navbar.module';
 import { AdminLayoutComponent } from './layouts/admin/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth/auth-layout.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './guards/index';
-import { AlertService, AuthenticationService } from '../services/index';
+import { AlertService, AuthenticationService, ProductService } from '../services/index';
 import { AlertComponent } from './directives/alert/alert.component';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ErrorEventBus } from '../event-buses/error.event-bus';
 
 @NgModule({
     imports:      [
@@ -30,7 +30,6 @@ import { DashboardModule } from './dashboard/dashboard.module';
         SidebarModule,
         NavbarModule,
         FooterModule,
-        FixedPluginModule,
         AuthenticationModule,
         DashboardModule,
     ],
@@ -44,7 +43,9 @@ import { DashboardModule } from './dashboard/dashboard.module';
         AlertService,
         AuthenticationService,
         AuthGuard,
-        BaseRequestOptions
+        BaseRequestOptions,
+        ProductService,
+        ErrorEventBus
     ],
     bootstrap:    [ AppComponent ]
 })

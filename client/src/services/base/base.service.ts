@@ -1,5 +1,5 @@
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import {MimeType} from '../../enumerations';
+import { MimeType } from '../../enumerations';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
@@ -8,25 +8,128 @@ import 'rxjs/add/operator/catch'
 import { ServiceError } from '../../classes/app-error.class'
 import { BaseModel } from '../../models';
 import { environment } from "../../environments/environment";
+import { ServiceConfigType, ServiceConfig } from './service-config';
+import { RestUrlConfigType, RestUrlBuilder } from '../../builders/rest-url.builder';
+import { CONST } from '../../constants';
 
 
-export class BaseService {
+export class BaseService<T extends BaseModel> {
 
+    protected restUrlBuilder: RestUrlBuilder = new RestUrlBuilder();
     protected requestOptions: RequestOptions;
-    protected identityApiBaseV1: string = `${environment.IdentityAPIBase}${environment.IdentityAPIVersion}`;
+    protected serviceConfig: ServiceConfigType;
+    protected identityApiBaseV1: string = `${environment.IdentityAPIBase}${environment.V1}`;
+    protected productApiBaseV1: string = `${environment.ProductAPIBase}${environment.V1}`;
 
-    public constructor(protected http: Http){
+
+    // tslint:disable-next-line:member-ordering
+    public static convertToClass<T>(obj: Object, classToInstantiate): T {
+        for (const i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                classToInstantiate[i] = obj[i];
+            }
+        }
+        return classToInstantiate;
+    }
+
+    constructor(
+        protected http: Http,
+        serviceConfigType: ServiceConfigType
+    ) {
+        this.serviceConfig = new ServiceConfig(serviceConfigType);
         this.requestOptions = new RequestOptions({
-            headers: new Headers({ 'Content-Type': MimeType.JSON })
+            headers: new Headers({ 
+                'Content-Type': MimeType.JSON,
+                'x-access-token': localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION)
+         }),
+            // I'm not sure if I need the with credentials part or not.
+            //withCredentials: true
         });
+
+        this.restUrlBuilder.withConfig({
+            rootApiUrl: this.serviceConfig.rootApiUrl,
+            urlSuffix: this.serviceConfig.urlSuffix
+        });
+
+        return this;
     }
 
-    protected post(endpoint: string, object: any): Observable<Response>{
-        return this.http.post(`${this.identityApiBaseV1}${endpoint}`, object, this.requestOptions)
+    get<T extends BaseModel>(id: string): Observable<T> {
+        const url = this.buildUrl({ id });
+        return this.http
+            .get(url, this.requestOptions)
             .map((res: Response) => {
-                return res;
-            }).catch(this.handleError);
+                return res.json();;
+            })
+            .catch(this.handleError);
     }
+
+    getList<T extends BaseModel>(query?: Object): Observable<T[]> {
+        const url = this.buildUrl({ query });
+        return this.http
+            .get(url, this.requestOptions)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    delete<T extends BaseModel>(id: string, query?: Object): Observable<void> {
+        const url = this.buildUrl({ id, query });
+        return this.http
+            .delete(url, this.requestOptions)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    create<T extends BaseModel>(T: T, query?: Object): Observable<T> {
+        const url = this.buildUrl({ query });
+        return this.http
+            .post(url, T, this.requestOptions)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    update<T extends BaseModel>(T: T, id: string, query?: Object): Observable<T> {
+        const url = this.buildUrl({ id: id, query: query });
+        return this.http
+            .put(url, T, this.requestOptions)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    // This is used for single operations that execute, and return a single object.
+    // item.checkout is a good example of this kind of operation.
+    // We will clear chache when this method gets executed
+    executeSingleOperation<T extends BaseModel>(id: string, operation?: string, query?: Object): Observable<T> {
+        const url: string = this.buildUrl({ id, operation, query });
+        return this.http
+            .get(url, this.requestOptions)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    // This is used for listing operations that return a list of objects.
+    // item.versions is a good example, where you're going to return a list of items.
+    executeListOperation<T extends BaseModel>(id: string, operation: string, query?: Object): Observable<T[]> {
+        const url = this.buildUrl({ id, operation, query });
+        return this.http.get(url, this.requestOptions).map((res: Response) => {
+            return res.json();
+        }).catch(this.handleError);
+    }
+
+    protected buildUrl(configuration?: RestUrlConfigType): string {
+        return this.restUrlBuilder.withConfig(configuration).build();
+    }
+
 
     // The server will be sending this back:
     // response.json({

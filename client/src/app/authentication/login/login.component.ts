@@ -4,12 +4,8 @@ import { AuthenticationService } from '../../../services';
 import { AlertService } from '../../../services';
 import { NotificationType } from '../../../enumerations';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { IUser } from '../../../models/index';
 declare var $: any;
-
-export interface IUser{
-    email: string,
-    password: string
-}
 
 @Component({
     selector: 'app-login',

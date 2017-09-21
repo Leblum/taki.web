@@ -38,6 +38,9 @@ RUN npm rebuild bcrypt --build-from-source
 # go to the client, and install
 RUN cd /usr/app/client && npm install
 
+# TODO Remove angular folder from within datatables.net in node_modules.  There's a stack overflow link in your favorites
+RUN cd /usr/app/client/node_modules/angular-datatables && rm -rf node_modules
+
 # copy eveything over
 COPY . .
 
@@ -46,6 +49,8 @@ RUN cd /usr/app/client && npm run prodbuild
 RUN cd /usr/app/client && npm run stagebuild
 RUN cd /usr/app/client && npm run testbuild
 RUN cd /usr/app/client && npm run devbuild
+
+
 
 # build the server
 RUN gulp build 

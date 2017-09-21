@@ -40,7 +40,7 @@ export class NavbarComponent implements OnInit{
     }
 
     ngOnInit(){
-        this.email = JSON.parse(localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION)).email;
+        this.email = JSON.parse(localStorage.getItem(CONST.CLIENT_DECODED_TOKEN_LOCATION)).email;
         
         this.listTitles = ROUTES.filter(listTitle => listTitle);
 
