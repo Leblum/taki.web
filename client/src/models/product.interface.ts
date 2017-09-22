@@ -1,19 +1,27 @@
-import { BaseModel } from "./index";
+import { IBaseModel } from "./index";
+import * as enums from "../enumerations";
 
-export interface IProduct extends BaseModel {
+export interface IProduct extends IBaseModel {
+    // Add ownerships to the interface
+    _id: string,
+    __v: number,
+    ownerships?: [{
+        ownerId: string,
+        ownershipType: enums.OwnershipType
+    }],
     displayName?: string,
     commonName?: string,
     shortDescription?: string,
     longDescription?: string,
     thumbnailDescription?: string,
-    type?: number,
+    type?: enums.ProductType,
     category?: string,
     tags?: [string],
     isTemplate: boolean,
     isLocal?: boolean,
     masterProductId?: string,
     sku?: string,
-    primaryColor?: number,
+    primaryColor?: enums.PrimaryColor,
     productLocation?: {
         type:string,
         coordinates: Array<number>
@@ -71,7 +79,7 @@ export interface IProduct extends BaseModel {
         endDate?: Date,
     },
     images?: [{
-        type?: number,
+        type?: enums.ImageType,
         url?: string,
         width?: number,
         height?: number,

@@ -9,21 +9,82 @@
           <div class="card-content">
             <form #f="ngForm" novalidate (ngSubmit)="saveProduct(f.value, f.valid)" class="form-horizontal">
               <fieldset>
-
+                <legend>Important Details</legend>
                 <div class="form-group">
                   <label class="col-sm-2 control-label">Product Id</label>
                   <div class="col-sm-10">
-                    <p class="form-control-static">{{cProd._id}}</p>
+                    <p class="form-control-static">{{cProd?._id}}</p>
                   </div>
                 </div>
 
                 <div class="form-group">
+                  <label class="col-sm-2 control-label">Product Type</label>
+                  <div class="col-sm-10">
+                    <div class="dropdown" style="width:200px;">
+                        <select class="selectpicker" name="productType" [ngModel]="cProd?.type" (ngModelChange)="cProd.type=$event" #currProductType="ngModel" data-style="btn btn-info btn-block" title="Product Type" data-size="7">
+                            <option *ngFor="let productType of productTypes" [value]="productType.value" [selected]="cProd?.type == productType.value">
+                                {{productType.name}}
+                            </option>
+                        </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" [ngClass]="{ 'has-error': displayName.invalid && f.submitted}">
                   <label class="col-sm-2 control-label">Display Name</label>
                   <div class="col-sm-10">
-                    <input type="text" name="displayName" required #displayName="ngModel" required class="form-control" [ngModel]="cProd.displayName">
+                    <input type="text" name="displayName" required #displayName="ngModel" (ngModelChange)="cProd.displayName=$event" required class="form-control" [ngModel]="cProd?.displayName">
+                    <span class="help-block">This is the name that a supplier might supply, ie. Magic Midnight Rose.</span>
                     <small [hidden]="displayName.valid || (displayName.pristine && !f.submitted)" class="text-warning">
                                   Display name is required for products.
                                 </small>
+                  </div>
+                </div>
+
+                <div class="form-group" [ngClass]="{ 'has-error': commonName.invalid && f.submitted}">
+                  <label class="col-sm-2 control-label">Common Name</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="commonName" placeholder="ie. Rose" required #commonName="ngModel" (ngModelChange)="cProd.commonName=$event" required class="form-control"
+                      [ngModel]="cProd?.commonName">
+                    <span class="help-block">This is the leblum standard name ie. Rose</span>
+                    <small [hidden]="commonName.valid || (commonName.pristine && !f.submitted)" class="text-warning">
+                                    Common Name is required for products.
+                                  </small>
+                  </div>
+                </div>
+
+                <div class="form-group" [ngClass]="{ 'has-error': shortDescription.invalid && f.submitted}">
+                  <label class="col-sm-2 control-label">Short Description</label>
+                  <div class="col-sm-10">
+                    <textarea class="form-control" placeholder="Short Description" rows="2" name="shortDescription" required #shortDescription="ngModel"
+                      required class="form-control" [ngModel]="cProd?.shortDescription"  (ngModelChange)="cProd.shortDescription=$event">
+                    </textarea>
+                    <span class="help-block">A short 1-2 sentence description</span>
+                    <small [hidden]="shortDescription.valid || (shortDescription.pristine && !f.submitted)" class="text-warning">
+                                      Short Description is required for products.
+                                    </small>
+                  </div>
+                </div>
+
+                <div class="form-group" [ngClass]="{ 'has-error': longDescription.invalid && f.submitted}">
+                  <label class="col-sm-2 control-label">Long Description</label>
+                  <div class="col-sm-10">
+                    <textarea class="form-control" placeholder="Long Description" rows="4" name="longDescription" required #longDescription="ngModel"
+                      required class="form-control" [ngModel]="cProd?.longDescription" (ngModelChange)="cProd.longDescription=$event">
+                    </textarea>
+                    <small [hidden]="longDescription.valid || (longDescription.pristine && !f.submitted)" class="text-warning">
+                                        Long Description is required for products.
+                                      </small>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Thumbnail Description</label>
+                  <div class="col-sm-10">
+                    <textarea class="form-control" placeholder="The best rose you can buy!" rows="1" name="thumbnailDescription" #thumbnailDescription="ngModel"
+                      class="form-control" [ngModel]="cProd?.thumbnailDescription"  (ngModelChange)="cProd.thumbnailDescription=$event">
+                      </textarea>
+                    <span class="help-block">On small screens or in small grids this is the description that will be used.</span>
                   </div>
                 </div>
 
@@ -31,270 +92,98 @@
                   <label class="col-sm-2 control-label">Template?</label>
                   <div class="col-sm-10">
                     <div class="checkbox">
-                      <input id="chkTemplate" type="checkbox" [checked]="cProd.isTemplate" >
-                      <label for="chkTemplate">Is this product a template?</label>
+                      <input id="chkTemplate" type="checkbox" disabled [checked]="cProd?.isTemplate" (ngModelChange)="cProd.isTemplate=$event">
+                      <label for="chkTemplate">Is this product a template? If you want to create a product from this template go back to the grid.</label>
                     </div>
                   </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">API Location</label>
+                  <label class="col-sm-2 control-label">Tags</label>
+                  <div class="col-sm-10 bootstrap-tagsinput">
+                    <span class="tag label label-info" *ngFor="let tag of cProd?.tags">
+                          {{tag}}
+                          <span data-role="remove" (click)="removeTag(tag)"></span>
+                    </span>
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>Pricing</legend>
+
+                <div class="form-group" [ngClass]="{ 'has-error': supPerStem.invalid && f.submitted}">
+                  <label class="col-sm-2 control-label">Supplier Per Stem Pricing</label>
+                  <div class="col-sm-10">
+                    <input [disabled]="cProd?.isTemplate == true" type="text" name="supPerStem" placeholder="2.50, no dollar signs" #supPerStem="ngModel"
+                      class="form-control" [ngModel]="cProd?.pricing?.supplier?.perStem" pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                      (ngModelChange)="cProd.pricing.supplier.perStem=$event">
+                    <span class="help-block">The suppliers price.  Does not apply for templates.</span>
+                    <small [hidden]="supPerStem.disabled ||  supPerStem.valid || supPerStem.isEmpty" class="text-warning">
+                                If entered, it must be a number. No dollar signs. 2.30, 2, 14, etc.
+                        </small>
+                  </div>
+                </div>
+
+                <div class="form-group" [ngClass]="{ 'has-error': stemPerBundle.invalid && f.submitted}">
+                  <label class="col-sm-2 control-label">Supplier Stems Per Bundle</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="stemPerBundle" placeholder="25" [disabled]="cProd?.isTemplate == true" #stemPerBundle="ngModel"
+                      class="form-control" [ngModel]="cProd?.pricing?.supplier?.stemsPerBundle" 
+                      (ngModelChange)="cProd.pricing.supplier.stemsPerBundle=$event"
+                      pattern="^[0-9]+$">
+                    <small [hidden]="stemPerBundle.disabled ||  stemPerBundle.valid || stemPerBundle.isEmpty" class="text-warning">
+                                  If entered, it must be a whole number, no decimals.
+                          </small>
+                  </div>
+                </div>
+
+                <div class="form-group" [ngClass]="{ 'has-error': industryPrice.invalid && f.submitted}">
+                  <label class="col-sm-2 control-label">Industry Price</label>
+                  <div class="col-sm-10">
+                    <input type="text" [disabled]="cProd?.isTemplate == false" name="industryPrice" placeholder="2.50, no dollar signs" #industryPrice="ngModel"
+                      class="form-control" [ngModel]="cProd?.pricing?.industryPrice" 
+                      pattern="^[0-9]+(\.[0-9]{1,2})?$">
+                    <span class="help-block">Industry price set by leblum.</span>
+                    <small [hidden]="industryPrice.valid || industryPrice.isEmpty" class="text-warning">
+                                    If entered, it must be a number. No dollar signs. 2.30, 2, 14, etc.
+                            </small>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Mean Price</label>
                     <div class="col-sm-10">
-                      <p class="form-control-static">{{cProd.href}}</p>
+                      <p class="form-control-static">{{cProd?.pricing?.meanPrice}}</p>
                     </div>
                   </div>
 
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Version</label>
-                      <div class="col-sm-10">
-                        <p class="form-control-static">{{cProd.__v}}</p>
-                      </div>
-                    </div>
               </fieldset>
 
               <fieldset>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">With help</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control">
-                    <span class="help-block">A block of help text that breaks onto a new line.</span>
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Password</label>
-                  <div class="col-sm-10">
-                    <input type="password" name="password" class="form-control">
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Placeholder</label>
-                  <div class="col-sm-10">
-                    <input type="text" placeholder="placeholder" class="form-control">
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Disabled</label>
-                  <div class="col-sm-10">
-                    <input type="text" placeholder="Disabled input here..." disabled="" class="form-control">
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Static control</label>
-                  <div class="col-sm-10">
-                    <p class="form-control-static">hello@creative-tim.com</p>
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Checkboxes and radios</label>
-                  <div class="col-sm-10">
-                    <div class="checkbox">
-                      <input id="checkbox1" type="checkbox">
-                      <label for="checkbox1">
-                                              First checkbox
-                                          </label>
-                    </div>
-
-                    <div class="checkbox">
-                      <input id="checkbox2" type="checkbox">
-                      <label for="checkbox2">
-                                              Second checkbox
-                                          </label>
-                    </div>
-
-                    <div class="radio">
-                      <input type="radio" name="radio1" id="radio1" value="option1" checked="">
-                      <label for="radio1">
-                                               First Radio
-                                          </label>
-                    </div>
-
-                    <div class="radio">
-                      <input type="radio" name="radio1" id="radio2" value="option2">
-                      <label for="radio2">
-                                              Second Radio
-                                          </label>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Inline checkboxes</label>
-                  <div class="col-sm-10">
-                    <div class="checkbox checkbox-inline">
-                      <input id="checkbox50" type="checkbox">
-                      <label for="checkbox50">
-                                             a
-                                         </label>
-                    </div>
-                    <div class="checkbox checkbox-inline">
-                      <input id="checkbox51" type="checkbox">
-                      <label for="checkbox51">
-                                             b
-                                         </label>
-                    </div>
-                    <div class="checkbox checkbox-inline">
-                      <input id="checkbox52" type="checkbox">
-                      <label for="checkbox52">
-                                             c
-                                         </label>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <legend>Input Variants</legend>
+                <legend>Technical Details</legend>
 
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">Custom Checkboxes &amp; radios</label>
-                  <div class="col-sm-4 col-sm-offset-1">
-                    <div class="checkbox">
-                      <input id="checkbox5" type="checkbox">
-                      <label for="checkbox5">
-                                          Unchecked
-                                          </label>
-                    </div>
-
-                    <div class="checkbox">
-                      <input id="checkbox6" type="checkbox" checked="">
-                      <label for="checkbox6">
-                                          Checked
-                                          </label>
-                    </div>
-
-                    <div class="checkbox">
-                      <input id="checkbox7" type="checkbox" disabled="">
-                      <label for="checkbox7">
-                                           Disabled unchecked
-                                          </label>
-                    </div>
-
-                    <div class="checkbox">
-                      <input id="checkbox8" type="checkbox" checked="" disabled="">
-                      <label for="checkbox8">
-                                               Disabled checked
-                                          </label>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-5">
-                    <div class="radio">
-                      <input type="radio" name="radio10" id="radio20" value="option20">
-                      <label for="radio20">
-                                               Radio is off
-                                          </label>
-                    </div>
-
-                    <div class="radio">
-                      <input type="radio" name="radio10" id="radio25" value="option25" checked="">
-                      <label for="radio25">
-                                               Radio is on
-                                          </label>
-                    </div>
-
-                    <div class="radio">
-                      <input type="radio" name="radio30" id="radio11" value="option11" disabled="">
-                      <label for="radio11">
-                                               Disabled radio is off
-                                          </label>
-                    </div>
-
-                    <div class="radio">
-                      <input type="radio" name="radio30" id="radio12" value="option12" checked="" disabled="">
-                      <label for="radio12">
-                                               Disabled radio is on
-                                          </label>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <div class="form-group has-success">
-                  <label class="col-sm-2 control-label">Input with success</label>
+                  <label class="col-sm-2 control-label">Master Product Id</label>
                   <div class="col-sm-10">
-                    <input type="text" value="Success" class="form-control" />
+                    <p class="form-control-static">{{cProd?.masterProductId}}</p>
                   </div>
                 </div>
-              </fieldset>
 
-              <fieldset>
-                <div class="form-group has-error">
-                  <label class="col-sm-2 control-label">Input with error</label>
-                  <div class="col-sm-10">
-                    <input type="text" value="Error" class="form-control" />
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <div class="form-group column-sizing">
-                  <label class="col-sm-2 control-label">Column sizing</label>
-                  <div class="col-sm-10">
-                    <div class="row">
-                      <div class="col-md-3">
-                        <input type="text" placeholder=".col-md-3" class="form-control">
-                      </div>
-                      <div class="col-md-4">
-                        <input type="text" placeholder=".col-md-4" class="form-control">
-                      </div>
-                      <div class="col-md-5">
-                        <input type="text" placeholder=".col-md-5" class="form-control">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset>
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">Input groups</label>
-                  <div class="col-sm-3">
-                    <div class="input-group">
-                      <span class="input-group-addon">@</span>
-                      <input type="text" placeholder="Username" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-sm-3">
-                    <div class="input-group">
-                      <input type="text" class="form-control">
-                      <span class="input-group-addon">.00</span>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="input-group">
-                      <span class="input-group-addon">$</span>
-                      <input type="text" class="form-control">
-                      <span class="input-group-addon">.00</span>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Textarea</label>
+                  <label class="col-sm-2 control-label">API Location</label>
                   <div class="col-sm-10">
-                    <textarea class="form-control" placeholder="Here can be your nice text" rows="3"></textarea>
+                    <p class="form-control-static">{{cProd?.href}}</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Version</label>
+                  <div class="col-sm-10">
+                    <p class="form-control-static">{{cProd?.__v}}</p>
                   </div>
                 </div>
               </fieldset>
+              <button type="submit" class="btn btn-fill btn-wd ">Save</button>
             </form>
           </div>
         </div>

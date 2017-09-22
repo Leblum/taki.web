@@ -79,6 +79,10 @@ export class ProductListComponent implements OnInit {
       this.errorEventBus.throw(error);
     });
   }
+
+  refreshProducts(){
+    this.getProducts();
+  }
     // // Iniitialize the table.
     // let table = $('#datatables').DataTable();
 

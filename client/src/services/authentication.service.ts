@@ -48,5 +48,6 @@ export class AuthenticationService extends BaseService<IUser>{
     logout() {
         // remove user from local storage to log user out
         localStorage.removeItem(CONST.CLIENT_TOKEN_LOCATION);
+        localStorage.removeItem(CONST.CLIENT_DECODED_TOKEN_LOCATION);
     }
 }

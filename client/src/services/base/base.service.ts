@@ -6,14 +6,14 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch'
 
 import { ServiceError } from '../../classes/app-error.class'
-import { BaseModel } from '../../models';
+import { IBaseModel } from '../../models';
 import { environment } from "../../environments/environment";
 import { ServiceConfigType, ServiceConfig } from './service-config';
 import { RestUrlConfigType, RestUrlBuilder } from '../../builders/rest-url.builder';
 import { CONST } from '../../constants';
 
 
-export class BaseService<T extends BaseModel> {
+export class BaseService<T extends IBaseModel> {
 
     protected restUrlBuilder: RestUrlBuilder = new RestUrlBuilder();
     protected requestOptions: RequestOptions;
@@ -54,7 +54,7 @@ export class BaseService<T extends BaseModel> {
         return this;
     }
 
-    get<T extends BaseModel>(id: string): Observable<T> {
+    get<T extends IBaseModel>(id: string): Observable<T> {
         const url = this.buildUrl({ id });
         return this.http
             .get(url, this.requestOptions)
@@ -64,7 +64,7 @@ export class BaseService<T extends BaseModel> {
             .catch(this.handleError);
     }
 
-    getList<T extends BaseModel>(query?: Object): Observable<T[]> {
+    getList<T extends IBaseModel>(query?: Object): Observable<T[]> {
         const url = this.buildUrl({ query });
         return this.http
             .get(url, this.requestOptions)
@@ -74,7 +74,7 @@ export class BaseService<T extends BaseModel> {
             .catch(this.handleError);
     }
 
-    delete<T extends BaseModel>(id: string, query?: Object): Observable<void> {
+    delete<T extends IBaseModel>(id: string, query?: Object): Observable<void> {
         const url = this.buildUrl({ id, query });
         return this.http
             .delete(url, this.requestOptions)
@@ -84,7 +84,7 @@ export class BaseService<T extends BaseModel> {
             .catch(this.handleError);
     }
 
-    create<T extends BaseModel>(T: T, query?: Object): Observable<T> {
+    create<T extends IBaseModel>(T: T, query?: Object): Observable<T> {
         const url = this.buildUrl({ query });
         return this.http
             .post(url, T, this.requestOptions)
@@ -94,7 +94,7 @@ export class BaseService<T extends BaseModel> {
             .catch(this.handleError);
     }
 
-    update<T extends BaseModel>(T: T, id: string, query?: Object): Observable<T> {
+    update<T extends IBaseModel>(T: T, id: string, query?: Object): Observable<T> {
         const url = this.buildUrl({ id: id, query: query });
         return this.http
             .put(url, T, this.requestOptions)
@@ -107,7 +107,7 @@ export class BaseService<T extends BaseModel> {
     // This is used for single operations that execute, and return a single object.
     // item.checkout is a good example of this kind of operation.
     // We will clear chache when this method gets executed
-    executeSingleOperation<T extends BaseModel>(id: string, operation?: string, query?: Object): Observable<T> {
+    executeSingleOperation<T extends IBaseModel>(id: string, operation?: string, query?: Object): Observable<T> {
         const url: string = this.buildUrl({ id, operation, query });
         return this.http
             .get(url, this.requestOptions)
@@ -119,7 +119,7 @@ export class BaseService<T extends BaseModel> {
 
     // This is used for listing operations that return a list of objects.
     // item.versions is a good example, where you're going to return a list of items.
-    executeListOperation<T extends BaseModel>(id: string, operation: string, query?: Object): Observable<T[]> {
+    executeListOperation<T extends IBaseModel>(id: string, operation: string, query?: Object): Observable<T[]> {
         const url = this.buildUrl({ id, operation, query });
         return this.http.get(url, this.requestOptions).map((res: Response) => {
             return res.json();
