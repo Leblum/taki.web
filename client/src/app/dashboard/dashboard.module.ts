@@ -7,15 +7,17 @@ import { OverviewComponent } from './overview/overview.component';
 import { DashboardRoutes } from './dashboard.routing';
 import { ProductListComponent } from './product-list/product-list.component';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { ImageUploaderModule } from '../shared/image-uploader/image-uploader.module'
 
 @NgModule({
     imports: [
         CommonModule,
         RouterModule.forChild(DashboardRoutes),
         FormsModule,
-        DataTablesModule
+        DataTablesModule,
+        ImageUploaderModule,
     ],
     declarations: [OverviewComponent, ProductListComponent, ProductDetailComponent]
 })
 
-export class DashboardModule {}
+export class DashboardModule { }

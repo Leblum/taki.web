@@ -27,7 +27,7 @@ export class ProductListComponent implements OnInit {
   constructor(public productService: ProductService, private alertService: AlertService, private errorEventBus: ErrorEventBus, private router: Router) { }
 
   ngOnInit() {
-    this.getProducts();
+    this.getProducts(false);
   }
 
   ngAfterViewInit(): void {
@@ -53,7 +53,7 @@ export class ProductListComponent implements OnInit {
     this.productService.delete(id).subscribe((response)=>{
       console.log(response);
       this.alertService.send({text: "Product Successfully Deleted", notificationType: NotificationType.success});
-      this.getProducts();
+      this.getProducts(false);
     },error => {
       this.errorEventBus.throw(error);
     });
@@ -63,7 +63,7 @@ export class ProductListComponent implements OnInit {
     this.router.navigate(['dashboard/products/detail/',id]);
   }
    
-  getProducts(){
+  getProducts(notifyUser: boolean){
     // When this control starts, go get the entities.
     this.productService.getList<IProduct>().subscribe(products => {
       this.products = products;
@@ -75,13 +75,16 @@ export class ProductListComponent implements OnInit {
           caseInsensitive: true
         }
       };
+      if(notifyUser){
+        this.alertService.send({ text: "Product List Refreshed", notificationType: NotificationType.success });
+      }
     }, error => {
       this.errorEventBus.throw(error);
     });
   }
 
   refreshProducts(){
-    this.getProducts();
+    this.getProducts(true);
   }
     // // Iniitialize the table.
     // let table = $('#datatables').DataTable();

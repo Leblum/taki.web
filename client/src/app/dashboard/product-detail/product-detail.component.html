@@ -4,7 +4,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Product Details</h4>
+            <h2 class="card-title">Edit Product</h2>
           </div>
           <div class="card-content">
             <form #f="ngForm" novalidate (ngSubmit)="saveProduct(f.value, f.valid)" class="form-horizontal">
@@ -99,16 +99,30 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-2 control-label">Tags</label>
-                  <div class="col-sm-10 bootstrap-tagsinput">
-                    <span class="tag label label-info" *ngFor="let tag of cProd?.tags">
+                    <label class="col-sm-2 control-label">Add Tags</label>
+                    <div class="col-sm-2">
+                    <input type="text" name="tagAdd" placeholder="gift" (keyup.enter)="addTags()" class="form-control" [(ngModel)]="tagsToAdd">
+                    </div>
+                    <div class="col-sm-5">
+                        <button type="button" class="btn btn-fill btn-wd" (click)="addTags()" >Add</button>
+                    </div>
+                  </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Current Tags</label>
+                  <div class="col-sm-10 bootstrap-tagsinput" >
+                    <span class="tag label label-info" style="font-size:20px;" *ngFor="let tag of cProd?.tags">
                           {{tag}}
-                          <span data-role="remove" (click)="removeTag(tag)"></span>
+                          <span data-role="remove" style="margin-left:5px;" (click)="removeTag(tag)"></span>
                     </span>
                   </div>
                 </div>
               </fieldset>
-              <fieldset>
+              <fieldset ngModelGroup="images">
+                <legend>Product Images</legend>
+                <app-image-uploader></app-image-uploader>
+              </fieldset>
+              <fieldset ngModelGroup="pricing">
                 <legend>Pricing</legend>
 
                 <div class="form-group" [ngClass]="{ 'has-error': supPerStem.invalid && f.submitted}">
@@ -141,7 +155,7 @@
                   <label class="col-sm-2 control-label">Industry Price</label>
                   <div class="col-sm-10">
                     <input type="text" [disabled]="cProd?.isTemplate == false" name="industryPrice" placeholder="2.50, no dollar signs" #industryPrice="ngModel"
-                      class="form-control" [ngModel]="cProd?.pricing?.industryPrice" 
+                      class="form-control" [ngModel]="cProd?.pricing?.industryPrice" (ngModelChange)="cProd.pricing.industryPrice=$event"
                       pattern="^[0-9]+(\.[0-9]{1,2})?$">
                     <span class="help-block">Industry price set by leblum.</span>
                     <small [hidden]="industryPrice.valid || industryPrice.isEmpty" class="text-warning">

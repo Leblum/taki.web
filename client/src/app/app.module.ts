@@ -37,7 +37,7 @@ import { ErrorEventBus } from '../event-buses/error.event-bus';
         AppComponent,
         AdminLayoutComponent,
         AuthLayoutComponent,
-        AlertComponent
+        AlertComponent,
     ],
     providers: [
         AlertService,

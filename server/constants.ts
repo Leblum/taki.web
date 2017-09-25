@@ -36,5 +36,6 @@ export const CONST = {
         PRODUCT_ADMIN_EMAIL: "integration.product.adminRole@leblum.com",
         PRODUCT_EDITOR_EMAIL: "integration.product.editorRole@leblum.com",
         ORGANIZATION_NAME: "IntegrationTestOrganization"
-    }
+    },
+    IMAGE_UPLOAD_PATH: 'img-uploads/'
 }

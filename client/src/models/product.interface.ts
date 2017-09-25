@@ -5,10 +5,10 @@ export interface IProduct extends IBaseModel {
     // Add ownerships to the interface
     _id: string,
     __v: number,
-    ownerships?: [{
+    ownerships?: {
         ownerId: string,
         ownershipType: enums.OwnershipType
-    }],
+    }[],
     displayName?: string,
     commonName?: string,
     shortDescription?: string,
@@ -16,7 +16,7 @@ export interface IProduct extends IBaseModel {
     thumbnailDescription?: string,
     type?: enums.ProductType,
     category?: string,
-    tags?: [string],
+    tags?: string[],
     isTemplate: boolean,
     isLocal?: boolean,
     masterProductId?: string,
@@ -34,11 +34,11 @@ export interface IProduct extends IBaseModel {
             }
         },
         supplierDelivery?: {
-            serviceZipCodes?: [number],
+            serviceZipCodes?: number[],
             serviceRadius?: number
         },
         courierDelivery?: {
-            serviceZipCodes?: [number]
+            serviceZipCodes?: number[]
         }
     },
     reviews?: {
@@ -58,11 +58,11 @@ export interface IProduct extends IBaseModel {
             responseDate?: Date,
         }
     },
-    sizes?: [string],
-    weights?: [string],
+    sizes?: string[],
+    weights?: string[],
     cutDate?: Date,
-    combinedWith?: [string],
-    similarTo?: [string],
+    combinedWith?: string[],
+    similarTo?: string[],
     pricing?: {
         supplier?: {
             perStem?: number,
@@ -78,14 +78,14 @@ export interface IProduct extends IBaseModel {
         startDate?: Date,
         endDate?: Date,
     },
-    images?: [{
+    images?: {
         type?: enums.ImageType,
         url?: string,
         width?: number,
         height?: number,
         order?: number,
         isActive?: boolean
-    }],
+    }[],
     version?: string,
     stemAttributes?: {
         version?: string,

@@ -5,6 +5,9 @@ import * as compression from 'compression';
 import * as morgan from 'morgan';
 import * as fs from 'fs';
 import * as helmet from 'helmet';
+import * as multer from 'multer';
+import * as rimraf from 'rimraf';
+
 //import * as routers from './routers';
 
 
@@ -27,6 +30,7 @@ import { Authz } from "./controllers/authorization";
 import path = require('path');
 import cors = require('cors')
 import { AuthenticationController } from './controllers/authentication.controller';
+import { ImageUploadController } from './controllers/image-upload.controller';
 
 // Creates and configures an ExpressJS web server.
 class Application {
@@ -34,6 +38,9 @@ class Application {
   public express: express.Application;
   public currentDatabase: Database;
   public server: http.Server;
+  public storage: multer.StorageEngine;
+  public upload: multer.Instance;
+
 
   // Run configuration methods on the Express instance.
   constructor() {
@@ -45,6 +52,7 @@ class Application {
     this.logging();      // Initialize logging 
     this.healthcheck();  // Router for the healthcheck
     this.connectDatabase(); // Setup database connection
+    this.setupMulter();
     this.seedSupportingServices();  // We want to make sure that anything this service needs exists in other services.
     this.loggingClientEndpoint();
     this.middleware();   // Setup the middleware - compression, etc...
@@ -59,6 +67,20 @@ class Application {
     this.server = this.express.listen(Config.active.get('port'), () => {
       log.info(`Listening on port: ${Config.active.get('port')}`);
     });
+  }
+
+  setupMulter(): any {
+    this.storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null,  CONST.IMAGE_UPLOAD_PATH);
+      },
+      filename: (req, file, cb) => {
+        let ext = path.extname(file.originalname);
+        cb(null, `${Math.random().toString(36).substring(7)}${ext}`);
+      }
+    });
+  
+    this.upload = multer({ storage: this.storage });
   }
 
   // Here we're going to make sure that the environment is setup.  
@@ -197,7 +219,7 @@ class Application {
 
     // Now we lock up the rest.
     this.express.use('/api/*', new AuthenticationController().authMiddleware);
-
+    this.express.use('/api/upload-images', this.upload.array('uploads',25),  new ImageUploadController().imageUploadMiddleware);
   }
 
   // We want to return a json response that will at least be helpful for 
