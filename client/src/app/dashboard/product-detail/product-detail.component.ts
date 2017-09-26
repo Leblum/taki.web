@@ -32,7 +32,6 @@ export class ProductDetailComponent implements OnInit {
       this.productService.get(this.currentProductId).subscribe((product: IProduct) => {
 
         this.cProd = product;
-        console.log(product.type);
         this.selectPickerNeedsStartup = true;
 
         //  Init Bootstrap Select Picker

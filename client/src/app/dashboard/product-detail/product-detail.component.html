@@ -117,10 +117,10 @@
                     </span>
                   </div>
                 </div>
-              </fieldset>
+              </fieldset> 
               <fieldset ngModelGroup="images">
                 <legend>Product Images</legend>
-                <app-image-uploader></app-image-uploader>
+                <app-image-uploader [relatedId]="cProd?._id" ></app-image-uploader>
               </fieldset>
               <fieldset ngModelGroup="pricing">
                 <legend>Pricing</legend>
