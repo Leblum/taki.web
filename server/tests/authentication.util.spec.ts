@@ -84,11 +84,11 @@ export class AuthenticationTestUtility {
 
             // So we're going to issue a patch request to update the roles array on our new users
             // find me 2 different roles.  I want one role that was the 'product:owner', and one that was 'product:editor'
-            let productAdminRoleResponse = await new IdentityApiService(CONST.ep.ROLES).getList(
+            let productAdminRoleResponse = await new IdentityApiService(CONST.ep.ROLES).query(
                 {
                     "name": CONST.PRODUCT_ADMIN_ROLE
                 });
-            let productEditorRoleResponse = await new IdentityApiService(CONST.ep.ROLES).getList(
+            let productEditorRoleResponse = await new IdentityApiService(CONST.ep.ROLES).query(
                 {
                     "name": CONST.PRODUCT_EDITOR_ROLE
                 });

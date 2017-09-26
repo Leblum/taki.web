@@ -2,7 +2,7 @@ import { Router, Request, Response, RequestParamHandler, NextFunction, RequestHa
 import mongoose = require('mongoose');
 import { Schema, Model, Document } from 'mongoose';
 import { Config } from '../config/config';
-import { ITokenPayload, IBaseModelDoc } from '../models/';
+import { ITokenPayload, IBaseModelDoc, IProduct } from '../models/';
 import { CONST } from "../constants";
 import { ApiErrorHandler } from "../api-error-handler";
 import * as rimraf from 'rimraf';
@@ -11,7 +11,7 @@ import * as multer from 'multer';
 import * as sharp from 'sharp';
 import log = require('winston');
 import * as enums from '../enumerations';
-import { ProductApiService2 } from '../services/index';
+import { ProductApiService } from '../services/index';
 
 export interface MulterFile {
     path: string // Available using `DiskStorage`.
@@ -46,15 +46,27 @@ export class ImageUploadController {
             let large = await controller.formatImage(enums.ImageType[enums.ImageType.large], rawImageFile, 1024);
 
             //Now we go get the product
-            await new ProductApiService2(CONST.ep.PRODUCTS).get(request.body.relatedId).subscribe(product => {
-                console.log(product);
-                response.status(200).json(request.files);
-                next();
-            });
+            const product = await new ProductApiService(CONST.ep.PRODUCTS).get<IProduct>(request.body.relatedId);
+            controller.addImage(product,rawImageFile,raw,enums.ImageType[enums.ImageType.raw])
+
+            console.log(product);
+            response.status(200).json(request.files);
+            next();
 
         } catch (err) {
             ApiErrorHandler.sendError(`Image Uploading / Resizing failed. ${err}`, 500, response, null, err);
         }
+    }
+
+    public addImage(product:IProduct, file: MulterFile, sharpInfo: sharp.OutputInfo, imagePrefix: string): IProduct{
+        product.images.push({
+            isActive:true,
+            type: enums.ImageType.raw,
+            height: sharpInfo.height,
+            width: sharpInfo.width,
+            url: `/uploads/${imagePrefix}-${file.filename}`
+        })
+        return product;
     }
 
     public async formatImage(imagePrefix: string, rawImageFile: MulterFile, width: number = null, height: number = null, quality: number = 80): Promise<sharp.OutputInfo> {

@@ -5,12 +5,6 @@ import log = require('winston');
 import * as superagent from "superagent";
 import { IBaseModel } from '../../models/index';
 import { RestUrlBuilder, IRestURLConfig } from '../../builders/rest-url.builder';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/frompromise';
-import 'rxjs/add/observable/of';
 import { Subscription } from 'rxjs/Subscription';
 
 export abstract class BaseService<T extends IBaseModel> {
@@ -24,115 +18,109 @@ export abstract class BaseService<T extends IBaseModel> {
         this.endpoint = endpoint;
     }
 
-    public get<T extends IBaseModel>(id: string, query?: any): Observable<T> {
-        const url = `${this.baseUrl}${this.endpoint}/${id}`;
-        return Observable.fromPromise(
-            superagent
-                .post(url)
-                .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
-                .send(query)
-        ).map(response => {
-            return response.body;
-        }).catch(this.observableErrorHandler);
-    }
+    public async get<T extends IBaseModel>(id: string, query?: any): Promise<T> {
+        try {
+            const url = `${this.baseUrl}${this.endpoint}/${id}`;
 
-    public getList<T extends IBaseModel>(query?: Object): Observable<T[]> {
-        const url = `${this.baseUrl}${this.endpoint}${CONST.ep.common.QUERY}`;
-        return Observable.fromPromise(
-            superagent
+            const response = await superagent
                 .get(url)
                 .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
-                .send(query)
-        ).map(response => {
+                .send(query);
+
             return response.body;
-        }).catch(this.observableErrorHandler);
+        } catch (err) { this.errorHandler(err) }
+
     }
 
-    delete<T extends IBaseModel>(id: string): Observable<any> {
-        const url = `${this.baseUrl}${this.endpoint}/${id}`;
-        return Observable.fromPromise(
-            superagent
+    public async getList<T extends IBaseModel>(query?: Object): Promise<T[]> {
+        try {
+            const url = `${this.baseUrl}${this.endpoint}${CONST.ep.common.QUERY}`;
+            const response = await superagent
+                .get(url)
+                .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
+                .send(query);
+            return response.body;
+        } catch (err) { this.errorHandler(err) }
+    }
+
+    public async delete(id: string): Promise<any> {
+        try {
+            const url = `${this.baseUrl}${this.endpoint}/${id}`;
+            let response = await superagent
+                .delete(url)
+                .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN));
+            return response.body;
+        } catch (err) { this.errorHandler(err) }
+    }
+
+    public async deleteMany(query: Object): Promise<any> {
+        try {
+            const url = `${this.baseUrl}${this.endpoint}`;
+            let response = await superagent
                 .delete(url)
                 .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
-        ).map(response => {
-            return response.body;
-        }).catch(this.observableErrorHandler);
-    }
-
-    deleteMany<T extends IBaseModel>(query: Object): Observable<any> {
-        const url = `${this.baseUrl}${this.endpoint}`;
-        return Observable.fromPromise(
-            superagent
-                .delete(url)
-                .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
                 .send(query)
-        ).map(response => {
             return response.body;
-        }).catch(this.observableErrorHandler);
+        } catch (err) { this.errorHandler(err) }
     }
 
-    public create<T extends IBaseModel>(T: T): Observable<T> {
-        const url = `${this.baseUrl}${this.endpoint}`;
-        return Observable.fromPromise(
-            superagent
+    public async create<T extends IBaseModel>(T: T): Promise<T> {
+        try {
+            const url = `${this.baseUrl}${this.endpoint}`;
+            const response = await superagent
                 .post(url)
                 .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
-                .send(T)
-        ).map(response => {
+                .send(T);
             return response.body;
-        }).catch(this.observableErrorHandler);
+        } catch (err) { this.errorHandler(err) }
     }
 
-    update<T extends IBaseModel>(body: any, id: string): Observable<T> {
-        const url = `${this.baseUrl}${this.endpoint}/${id}`;
-        return Observable.fromPromise(
-            superagent
+    public async update<T extends IBaseModel>(body: any, id: string): Promise<T> {
+        try {
+            const url = `${this.baseUrl}${this.endpoint}/${id}`;
+            const response = await superagent
                 .patch(url)
                 .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
-                .send(body)
-        ).map(response => {
+                .send(body);
             return response.body;
-        }).catch(this.observableErrorHandler);
+        } catch (err) { this.errorHandler(err) }
     }
 
     public async createRaw(body: any): Promise<superagent.Response> {
-        return await superagent
-            .post(`${this.baseUrl}${this.endpoint}`)
-            .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
-            .send(body)
-            .catch(err => this.errorHandler(err));
+        try {
+            return await superagent
+                .post(`${this.baseUrl}${this.endpoint}`)
+                .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
+                .send(body)
+                .catch(err => this.errorHandler(err));
+        } catch (err) { this.errorHandler(err) }
     }
 
-    // public async query(query: any): Promise<superagent.Response> {
-    //     return await superagent
-    //         .post(`${this.baseUrl}${this.endpoint}${CONST.ep.common.QUERY}`)
-    //         .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
-    //         .send(query)
-    //         .catch(err => this.errorHandler(err));
-    // }
-
-    public deleteSingle(queryBody: any): Subscription {
-
-        return this.getList(queryBody).subscribe((items) =>{
-        // There should be only one model returned by this query, and if we don't get just one back
-                // we're not going to delete anything.
-                if (items.length === 1 && items[0]._id) {
-                    return this.delete(items[0]._id);
-                }
-        });
+    public async query(query: any): Promise<superagent.Response> {
+        try {
+            return await superagent
+                .post(`${this.baseUrl}${this.endpoint}${CONST.ep.common.QUERY}`)
+                .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
+                .send(query)
+                .catch(err => this.errorHandler(err));
+        } catch (err) { this.errorHandler(err) }
     }
 
-    public observableErrorHandler(err, caught: Observable<T>) {
-        if (err) {
-            log.error(`There was an error calling out to the ${this.apiName}`, {
-                message: err.message ? err.message : 'null',
-                status: err.status ? err.status : 'null',
-                url: err.response && err.response.request && err.response.request.url ? err.response.request.url : 'null',
-                text: err.response && err.response.text ? err.response.text : 'null',
-                description: err.response && err.response.body && err.response.body.description ? err.response.body.description : 'null'
-            });
-        }
-        return Observable.throw(new Error(err));
+    public async deleteSingle(queryBody: any): Promise<superagent.Response> {
+        try {
+            let queryResponse = await this.query(queryBody);
+
+            // There should be only one model returned by this query, and if we don't get just one back
+            // we're not going to delete anything.
+            // TODO: I need to figure out how to handle error responses here.
+            if (queryResponse.status === 200 && queryResponse.body.length === 1 && queryResponse.body[0]._id) {
+                return await superagent
+                    .delete(`${this.baseUrl}${this.endpoint}/${queryResponse.body[0]._id}`)
+                    .set(CONST.TOKEN_HEADER_KEY, Config.active.get(CONST.SYSTEM_AUTH_TOKEN))
+                    .catch(err => this.errorHandler(err));
+
+            }
+        } catch (err) { this.errorHandler(err) }
     }
 
     public errorHandler(err: any): superagent.Response {
@@ -144,7 +132,7 @@ export abstract class BaseService<T extends IBaseModel> {
                 text: err.response && err.response.text ? err.response.text : 'null',
                 description: err.response && err.response.body && err.response.body.description ? err.response.body.description : 'null'
             });
-            //throw err;
+            throw err;
         }
         return null;
     }
