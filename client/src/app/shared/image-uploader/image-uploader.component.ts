@@ -1,8 +1,9 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input } from '@angular/core';
 import { UploadOutput, UploadInput, UploadFile, humanizeBytes } from 'ngx-uploader';
 import { Headers } from '@angular/http';
 import * as enums from '../../../enumerations';
 import { CONST } from '../../../constants';
+import { AlertService } from '../../../services/index';
 
 interface FormData {
   concurrency: number;
@@ -17,13 +18,14 @@ interface FormData {
 })
 export class ImageUploaderComponent implements OnInit {
 
+  @Input() relatedId: string;
   formData: FormData;
   files: UploadFile[];
   uploadInput: EventEmitter<UploadInput>;
   humanizeBytes: Function;
   dragOver: boolean;
 
-  constructor() {
+  constructor(private alertService: AlertService) {
     this.formData = {
       concurrency: 1,
       autoUpload: false,
@@ -43,18 +45,7 @@ export class ImageUploaderComponent implements OnInit {
     console.log(output);
 
     if (output.type === 'allAddedToQueue') {
-      const event: UploadInput = {
-        type: 'uploadAll',
-        url: '/image-upload',
-        method: 'POST',
-        concurrency: this.formData.concurrency,
-        headers: {
-          'Content-Type': enums.MimeType.JSON,
-          'x-access-token': localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION)
-        },
-      };
-
-      this.uploadInput.emit(event);
+      this.startUpload();
     } else if (output.type === 'addedToQueue' && typeof output.file !== 'undefined') {
       this.files.push(output.file);
     } else if (output.type === 'uploading' && typeof output.file !== 'undefined') {
@@ -68,19 +59,27 @@ export class ImageUploaderComponent implements OnInit {
       this.dragOver = false;
     } else if (output.type === 'drop') {
       this.dragOver = false;
+    } else if (output.type === 'done'){
+      if(output.file.responseStatus != 200){
+        this.alertService.send({ text: 'There was an error with the image upload', notificationType: enums.NotificationType.danger }, true);
+      }
     }
+
   }
 
   startUpload(): void {
     const event: UploadInput = {
       type: 'uploadAll',
-      url: '/image-upload',
+      url: '/api/upload-images',
       method: 'POST',
       concurrency: this.formData.concurrency,
       headers: {
-        'Content-Type': enums.MimeType.JSON,
+        //'Content-Type': enums.MimeType.MULTIPART,
         'x-access-token': localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION)
       },
+      data:{
+        'relatedId': this.relatedId
+      }
     };
 
     this.uploadInput.emit(event);

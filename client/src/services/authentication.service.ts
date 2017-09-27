@@ -30,8 +30,8 @@ export class AuthenticationService extends BaseService<IUser>{
                 localStorage.setItem(CONST.CLIENT_DECODED_TOKEN_LOCATION, JSON.stringify(tokenObj));
                 localStorage.setItem(CONST.CLIENT_TOKEN_LOCATION, user.token);
                 console.log(JSON.stringify(tokenObj));
+                return user;
             }
-            return user;
         });
     }
 

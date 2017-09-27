@@ -59,7 +59,7 @@ export class BaseService<T extends IBaseModel> {
         return this.http
             .get(url, this.requestOptions)
             .map((res: Response) => {
-                return res.json();;
+                return res.json();
             })
             .catch(this.handleError);
     }

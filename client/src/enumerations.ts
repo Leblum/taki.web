@@ -58,6 +58,7 @@ export class EnumHelper {
 
 export const MimeType = {
     JSON: 'application/json',
+    MULTIPART: 'multipart/form-data',
     TEXT: 'text/plain'
 };
 
