@@ -59,7 +59,7 @@ export class BaseService<T extends IBaseModel> {
         return this.http
             .get(url, this.requestOptions)
             .map((res: Response) => {
-                return res.json();;
+                return res.json();
             })
             .catch(this.handleError);
     }
@@ -96,8 +96,9 @@ export class BaseService<T extends IBaseModel> {
 
     update<T extends IBaseModel>(T: T, id: string, query?: Object): Observable<T> {
         const url = this.buildUrl({ id: id, query: query });
+        console.log(url);
         return this.http
-            .put(url, T, this.requestOptions)
+            .patch(url, T, this.requestOptions)
             .map((res: Response) => {
                 return res.json();
             })

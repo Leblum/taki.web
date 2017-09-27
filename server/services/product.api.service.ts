@@ -1,21 +1,13 @@
-import { BaseService } from "./base/base.service";
+import { BaseService } from './base/base.service';
+import { CONST } from '../constants';
+import { IProduct } from '../models/index';
 import { Config } from '../config/config';
-import { CONST } from "../constants";
+import { IdentityApiService } from './identity.api.service';
 
-import * as moment from 'moment';
-import * as superagent from "superagent";
-
-import * as chai from 'chai';
-import { IdentityApiService } from "./index";
-
-const expect = chai.expect;
-const should = chai.should();
-
-export class ProductApiService extends BaseService {
-
-    private static _constructor = (async () => {
-        BaseService.baseUrl = Config.active.get('productApiEndpoint');
-        BaseService.apiName = 'Product.Api.Service';
-        BaseService.systemAuthToken = await IdentityApiService.authenticateSystemUser();
-    })();
+export class ProductApiService extends BaseService{
+    constructor(endpoint:string) {
+        super(endpoint);
+        super.baseUrl = Config.active.get('productApiEndpoint');
+        super.apiName = 'taki-to-product-api';
+     }
 }

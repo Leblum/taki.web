@@ -5,6 +5,11 @@ import * as compression from 'compression';
 import * as morgan from 'morgan';
 import * as fs from 'fs';
 import * as helmet from 'helmet';
+import * as multer from 'multer';
+import * as rimraf from 'rimraf';
+import * as crypto from 'crypto';
+import * as mime from 'mime';
+
 //import * as routers from './routers';
 
 
@@ -27,16 +32,24 @@ import { Authz } from "./controllers/authorization";
 import path = require('path');
 import cors = require('cors')
 import { AuthenticationController } from './controllers/authentication.controller';
+import { ImageUploadController } from './controllers/image-upload.controller';
+import { MulterWrapper } from './multer.wrapper';
+import { IdentityApiService } from './services/index';
 
 // Creates and configures an ExpressJS web server.
 class Application {
+
   // ref to Express instance
   public express: express.Application;
   public currentDatabase: Database;
   public server: http.Server;
+  public storage: multer.StorageEngine;
+  public upload: multer.Instance;
+
 
   // Run configuration methods on the Express instance.
   constructor() {
+
     log.info('Starting up Express Server.');
 
     this.checkEnvironment();
@@ -47,6 +60,7 @@ class Application {
     this.connectDatabase(); // Setup database connection
     this.seedSupportingServices();  // We want to make sure that anything this service needs exists in other services.
     this.loggingClientEndpoint();
+    this.authenticateSystemUser();
     this.middleware();   // Setup the middleware - compression, etc...
     this.secure();       // Turn on security measures
     this.swagger();      // Serve up swagger, this is before authentication, as swagger is open
@@ -59,6 +73,13 @@ class Application {
     this.server = this.express.listen(Config.active.get('port'), () => {
       log.info(`Listening on port: ${Config.active.get('port')}`);
     });
+  }
+
+  // At startup, we're going to automatically authenticate the system user, so we can use that token
+  // TODO figure out how we renew this token when it expires.
+  private async authenticateSystemUser(): Promise<void> {
+    const token = await new IdentityApiService(CONST.ep.AUTHENTICATE).authenticateSystemUser();
+    log.info(`System user has been authenticated.`);
   }
 
   // Here we're going to make sure that the environment is setup.  
@@ -81,7 +102,7 @@ class Application {
   private logging(): void {
     if (Config.active.get('isConsoleLoggingActive')) {
       log.remove(log.transports.Console);
-      log.add(log.transports.Console, { colorize: Config.active.get('isConsoleColored') });
+      log.add(log.transports.Console, { colorize: Config.active.get('isConsoleColored')});
 
       // If we can use colors, for instance when running locally, we want to use them.
       // Out on the server though, for real logs, the colors will add weird tokens, that we don't want showing up in our logs.
@@ -169,6 +190,9 @@ class Application {
   private client(): void {
     log.info('Initializing Client');
 
+    // this allows you to see the files uploaded in dev http://localhost:8080/uploads/067e2ad8ca80503b9ae41c9c06855a9a-1afd01789a7015a436d35c6914236865-1493816227467.jpeg
+    this.express.use('/uploads', express.static( path.resolve(__dirname,'../img-uploads/')));
+
     this.express.use(express.static(path.join(__dirname, '../client/dist/' + Config.active.get('clientDistFolder') + '/')));
     this.express.use('*', express.static(path.join(__dirname, '../client/dist/' + Config.active.get('clientDistFolder') + '/index.html')));
   }
@@ -197,7 +221,7 @@ class Application {
 
     // Now we lock up the rest.
     this.express.use('/api/*', new AuthenticationController().authMiddleware);
-
+    this.express.use('/api/upload-images', new MulterWrapper().uploader.array('file'),  new ImageUploadController().imageUploadMiddleware);
   }
 
   // We want to return a json response that will at least be helpful for 

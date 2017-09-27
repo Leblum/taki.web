@@ -9,6 +9,8 @@ ENV NODE_ENV development
 # of the docker image
 RUN apk --no-cache add make gcc g++ python
 
+RUN apk add vips-dev fftw-dev --update-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/
+
 RUN npm i -g pm2
 
 RUN npm i -g gulp

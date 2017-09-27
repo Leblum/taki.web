@@ -2,6 +2,8 @@ import { Schema, Model, Document } from 'mongoose';
 import { IOwnership } from "../ownership.interface";
 
 export interface IBaseModel {
+    _id: string,
+    __v: number,
     createdBy?: string;
     modifiedBy?: string;
     createdAt?: Date,

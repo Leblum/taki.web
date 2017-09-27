@@ -42,7 +42,7 @@ export class AlertComponent {
                 case NotificationType.info:
                     return 1000;
                 case NotificationType.warning:
-                    return 2000;
+                    return 5000;
                 case NotificationType.success:
                     return 1000;
                 default:

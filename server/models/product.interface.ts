@@ -2,9 +2,7 @@ import { IBaseModel } from "./index";
 import * as enums from "../enumerations";
 
 export interface IProduct extends IBaseModel {
-    // Add ownerships to the interface
-    _id: string,
-    __v: number,
+
     ownerships?: {
         ownerId: string,
         ownershipType: enums.OwnershipType
