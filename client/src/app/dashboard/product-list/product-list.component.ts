@@ -95,32 +95,5 @@ export class ProductListComponent implements OnInit {
   refreshProducts() {
     this.getProducts(true);
   }
-  // // Iniitialize the table.
-  // let table = $('#datatables').DataTable();
 
-  // // Setup handlers for the table actions.
-  // // Edit record
-  // table.on('click', '.edit', function () {
-  //   let $tr = $(this).closest('tr');
-
-  //   let data = table.row($tr).data();
-  //   alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
-  // });
-
-  // // Delete a record
-  // table.on('click', '.remove', function (e) {
-  //   let $tr = $(this).closest('tr');
-  //   table.row($tr).remove().draw();
-  //   e.preventDefault();
-  // });
-
-  // //Like record
-  // table.on('click', '.like', function () {
-  //   alert('You clicked on Like button');
-  // });
-
-  // // If the table is not empty then hide the empty row
-  // if(this.products.length > 0){
-  //   $('.dataTables_empty').hide();
-  // }
 }
