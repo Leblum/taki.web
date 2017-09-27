@@ -4,6 +4,7 @@ import { Headers } from '@angular/http';
 import * as enums from '../../../enumerations';
 import { CONST } from '../../../constants';
 import { AlertService } from '../../../services/index';
+import { environment } from '../../../environments/environment';
 
 interface FormData {
   concurrency: number;
@@ -70,7 +71,7 @@ export class ImageUploaderComponent implements OnInit {
   startUpload(): void {
     const event: UploadInput = {
       type: 'uploadAll',
-      url: '/api/upload-images',
+      url: `${environment.ProductAPIBase}${environment.V1}/upload-images`,
       method: 'POST',
       concurrency: this.formData.concurrency,
       headers: {
