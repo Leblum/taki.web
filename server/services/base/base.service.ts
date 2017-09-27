@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs/Subscription';
 
 export abstract class BaseService {
 
-    protected restUrlBuilder: RestUrlBuilder = new RestUrlBuilder();
     protected apiName: string;
     protected baseUrl: string;
     protected endpoint: string;
