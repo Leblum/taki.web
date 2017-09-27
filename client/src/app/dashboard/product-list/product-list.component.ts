@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { NotificationType } from '../../../enumerations';
 declare let $: any;
-
+declare let swal: any;
 
 
 @Component({
@@ -47,23 +47,32 @@ export class ProductListComponent implements OnInit {
     this.router.navigate(['dashboard/products/detail?new=true']);
   }
 
-  delete(id: string){
-    // Hit the product service, and delete it.
-    console.log(`Deleting id: ${id}`);
-    this.productService.delete(id).subscribe((response)=>{
-      console.log(response);
-      this.alertService.send({text: "Product Successfully Deleted", notificationType: NotificationType.success});
-      this.getProducts(false);
-    },error => {
-      this.errorEventBus.throw(error);
+  delete(id: string) {
+    swal({
+      title: 'Delete this Product?',
+      text: "This can't be reverted",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonClass: 'btn btn-success',
+      cancelButtonClass: 'btn btn-danger',
+      confirmButtonText: 'Delete',
+      buttonsStyling: false
+    }).then(() => {
+      // Hit the product service, and delete it.
+      this.productService.delete(id).subscribe((response) => {
+        this.alertService.send({text: "Product Successfully Deleted", notificationType: NotificationType.success});
+        this.getProducts(false);
+      }, error => {
+        this.errorEventBus.throw(error);
+      });
     });
   }
 
-  edit(id: string){
-    this.router.navigate(['dashboard/products/detail/',id]);
+  edit(id: string) {
+    this.router.navigate(['dashboard/products/detail/', id]);
   }
-   
-  getProducts(notifyUser: boolean){
+
+  getProducts(notifyUser: boolean) {
     // When this control starts, go get the entities.
     this.productService.getList<IProduct>().subscribe(products => {
       this.products = products;
@@ -75,7 +84,7 @@ export class ProductListComponent implements OnInit {
           caseInsensitive: true
         }
       };
-      if(notifyUser){
+      if (notifyUser) {
         this.alertService.send({ text: "Product List Refreshed", notificationType: NotificationType.success });
       }
     }, error => {
@@ -83,35 +92,35 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-  refreshProducts(){
+  refreshProducts() {
     this.getProducts(true);
   }
-    // // Iniitialize the table.
-    // let table = $('#datatables').DataTable();
+  // // Iniitialize the table.
+  // let table = $('#datatables').DataTable();
 
-    // // Setup handlers for the table actions.
-    // // Edit record
-    // table.on('click', '.edit', function () {
-    //   let $tr = $(this).closest('tr');
+  // // Setup handlers for the table actions.
+  // // Edit record
+  // table.on('click', '.edit', function () {
+  //   let $tr = $(this).closest('tr');
 
-    //   let data = table.row($tr).data();
-    //   alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
-    // });
+  //   let data = table.row($tr).data();
+  //   alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
+  // });
 
-    // // Delete a record
-    // table.on('click', '.remove', function (e) {
-    //   let $tr = $(this).closest('tr');
-    //   table.row($tr).remove().draw();
-    //   e.preventDefault();
-    // });
+  // // Delete a record
+  // table.on('click', '.remove', function (e) {
+  //   let $tr = $(this).closest('tr');
+  //   table.row($tr).remove().draw();
+  //   e.preventDefault();
+  // });
 
-    // //Like record
-    // table.on('click', '.like', function () {
-    //   alert('You clicked on Like button');
-    // });
+  // //Like record
+  // table.on('click', '.like', function () {
+  //   alert('You clicked on Like button');
+  // });
 
-    // // If the table is not empty then hide the empty row
-    // if(this.products.length > 0){
-    //   $('.dataTables_empty').hide();
-    // }
+  // // If the table is not empty then hide the empty row
+  // if(this.products.length > 0){
+  //   $('.dataTables_empty').hide();
+  // }
 }

@@ -8,7 +8,7 @@ import { IUser } from "../models/user.interface";
 import * as log from 'winston';
 import { BaseService } from "./base/base.service";
 
-export class IdentityApiService extends BaseService<IUser> {
+export class IdentityApiService extends BaseService{
 
     constructor(endpoint:string){
         super(endpoint);

@@ -4,7 +4,7 @@ import { IProduct } from '../models/index';
 import { Config } from '../config/config';
 import { IdentityApiService } from './identity.api.service';
 
-export class ProductApiService extends BaseService<IProduct>{
+export class ProductApiService extends BaseService{
     constructor(endpoint:string) {
         super(endpoint);
         super.baseUrl = Config.active.get('productApiEndpoint');

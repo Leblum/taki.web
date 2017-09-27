@@ -7,7 +7,7 @@ import { IBaseModel } from '../../models/index';
 import { RestUrlBuilder, IRestURLConfig } from '../../builders/rest-url.builder';
 import { Subscription } from 'rxjs/Subscription';
 
-export abstract class BaseService<T extends IBaseModel> {
+export abstract class BaseService {
 
     protected restUrlBuilder: RestUrlBuilder = new RestUrlBuilder();
     protected apiName: string;

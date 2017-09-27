@@ -1,9 +1,11 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService, AlertService } from '../../../services/index';
 import { IProduct } from '../../../models/index';
 import { ErrorEventBus } from '../../../event-buses/error.event-bus';
-import { ProductType, EnumHelper, NotificationType } from '../../../enumerations';
+import { ProductType, EnumHelper, NotificationType, ImageType } from '../../../enumerations';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
 declare var $: any;
 
 
@@ -12,7 +14,14 @@ declare var $: any;
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss']
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, AfterViewInit {
+  // Images table
+  public imagesTable;
+  dtOptions: DataTables.Settings = {};
+  @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
+  dtTrigger: Subject<any> = new Subject();
+  public imageHeaders: string[] = ['Image','Url', 'Order', 'Height', 'Width', 'Is Active?', 'Actions']
 
   public currentProductId: string;
   public cProd: IProduct;
@@ -67,6 +76,19 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+
+  rerenderDataTable(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
+  }
+
   ngAfterViewChecked() {
     if (this.selectPickerNeedsStartup) {
       $('.selectpicker').selectpicker('refresh');
@@ -96,4 +118,27 @@ export class ProductDetailComponent implements OnInit {
 
     return tagsFromInput;
   }
+
+  filterImages(image: IProductImage){
+    if(image){
+      return image.type === ImageType.thumbnail;
+    }
+  }
+
+  deleteImage(order: number){
+    let indexLocationForDelete: number = -1;
+    let images = this.cProd.images.filter((image)=>{
+      return image.order != order;
+    })
+    this.cProd.images = images;
+  }
+}
+
+export interface IProductImage{
+  type?: ImageType,
+  url?: string,
+  width?: number,
+  height?: number,
+  order?: number,
+  isActive?: boolean
 }

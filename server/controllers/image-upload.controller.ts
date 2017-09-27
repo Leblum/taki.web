@@ -47,9 +47,19 @@ export class ImageUploadController {
 
             //Now we go get the product
             const product = await new ProductApiService(CONST.ep.PRODUCTS).get<IProduct>(request.body.relatedId);
-            controller.addImage(product,rawImageFile,raw,enums.ImageType[enums.ImageType.raw])
 
-            console.log(product);
+            // figure out what the maximum product image order number is, and add one to it. 
+            let nextOrderNum = controller.getNextOrderNumber(product);
+            // Add the product images.
+            controller.addImage(product, rawImageFile, raw, enums.ImageType.raw, nextOrderNum);
+            controller.addImage(product, rawImageFile, thumb, enums.ImageType.thumbnail, nextOrderNum);
+            controller.addImage(product, rawImageFile, icon, enums.ImageType.icon, nextOrderNum);
+            controller.addImage(product, rawImageFile, small, enums.ImageType.small, nextOrderNum);
+            controller.addImage(product, rawImageFile, medium, enums.ImageType.medium, nextOrderNum);
+            controller.addImage(product, rawImageFile, large, enums.ImageType.large, nextOrderNum);
+
+            const updatedProduct = await new ProductApiService(CONST.ep.PRODUCTS).update(product,product._id);
+
             response.status(200).json(request.files);
             next();
 
@@ -58,13 +68,25 @@ export class ImageUploadController {
         }
     }
 
-    public addImage(product:IProduct, file: MulterFile, sharpInfo: sharp.OutputInfo, imagePrefix: string): IProduct{
+    public getNextOrderNumber(product: IProduct): number {
+        if (product && product.images && product.images.length > 0) {
+            let max = 0;
+            product.images.forEach(image => {
+                max = Math.max(max, image.order);
+            });
+            return ++max;
+        }
+        return 0;
+    }
+
+    public addImage(product: IProduct, file: MulterFile, sharpInfo: sharp.OutputInfo, type: enums.ImageType, order: number, ): IProduct {
         product.images.push({
-            isActive:true,
-            type: enums.ImageType.raw,
+            isActive: true,
+            type: type,
             height: sharpInfo.height,
             width: sharpInfo.width,
-            url: `/uploads/${imagePrefix}-${file.filename}`
+            url: `/uploads/${enums.ImageType[type]}-${file.filename}`,
+            order: order
         })
         return product;
     }
