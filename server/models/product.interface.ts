@@ -77,12 +77,14 @@ export interface IProduct extends IBaseModel {
         endDate?: Date,
     },
     images?: {
+        _id?: string,
         type?: enums.ImageType,
         url?: string,
         width?: number,
         height?: number,
         order?: number,
-        isActive?: boolean
+        isActive?: boolean,
+        key?: string,
     }[],
     version?: string,
     stemAttributes?: {
