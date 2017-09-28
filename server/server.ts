@@ -5,7 +5,6 @@ import * as compression from 'compression';
 import * as morgan from 'morgan';
 import * as fs from 'fs';
 import * as helmet from 'helmet';
-import * as multer from 'multer';
 import * as rimraf from 'rimraf';
 import * as crypto from 'crypto';
 import * as mime from 'mime';
@@ -32,8 +31,6 @@ import { Authz } from "./controllers/authorization";
 import path = require('path');
 import cors = require('cors')
 import { AuthenticationController } from './controllers/authentication.controller';
-import { ImageUploadController } from './controllers/image-upload.controller';
-import { MulterWrapper } from './multer.wrapper';
 import { IdentityApiService } from './services/index';
 
 // Creates and configures an ExpressJS web server.
@@ -43,8 +40,6 @@ class Application {
   public express: express.Application;
   public currentDatabase: Database;
   public server: http.Server;
-  public storage: multer.StorageEngine;
-  public upload: multer.Instance;
 
 
   // Run configuration methods on the Express instance.
@@ -221,7 +216,6 @@ class Application {
 
     // Now we lock up the rest.
     this.express.use('/api/*', new AuthenticationController().authMiddleware);
-    this.express.use('/api/upload-images', new MulterWrapper().uploader.array('file'),  new ImageUploadController().imageUploadMiddleware);
   }
 
   // We want to return a json response that will at least be helpful for 
