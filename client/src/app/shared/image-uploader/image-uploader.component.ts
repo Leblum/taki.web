@@ -62,6 +62,7 @@ export class ImageUploaderComponent implements OnInit {
       this.dragOver = false;
     } else if (output.type === 'done'){
       if(output.file.responseStatus != 200){
+
         this.alertService.send({ text: 'There was an error with the image upload', notificationType: enums.NotificationType.danger }, true);
       }
     }
@@ -97,6 +98,5 @@ export class ImageUploaderComponent implements OnInit {
   removeAllFiles(): void {
     this.uploadInput.emit({ type: 'removeAll' });
   }
-
 }
 

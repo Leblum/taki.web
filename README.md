@@ -200,3 +200,39 @@ Or you can create a text index over all string fields in a collection:
 db.collection.createIndex( { "$**": "text" } )
 
 Obviously when the time comes we'll want to put a text index just on the fields that we want to search over, and not all fields.
+
+
+#Observable hacking when you want to wait for multiple responses back from the api
+```
+  deleteImage(order: number) {
+    let indexLocationForDelete: number = -1;
+    let imagesToDelete = this.cProd.images.filter((image) => {
+      return image.order === order;
+    });
+
+    let imagesToKeep = this.cProd.images.filter((image) => {
+      return image.order != order;
+    });
+
+    let mergedObservablesToSubscribeTo = Observable.create(observer => {});
+    for (let index = 0; index < imagesToDelete.length; index++) {
+      let image = imagesToDelete[index];
+      mergedObservablesToSubscribeTo = mergedObservablesToSubscribeTo.merge(this.productService.deleteProductImage(this.cProd._id, image._id));
+    }
+
+    let successfulImageDeletes:number = 1;
+    mergedObservablesToSubscribeTo.subscribe((response)=>{
+      ++successfulImageDeletes;
+      if(successfulImageDeletes === imagesToDelete.length){
+        // Now we're sure that we've deleted all the images we thought we would.
+
+        this.alertService.send({ text: `Product Images removed: ${this.cProd.displayName}`, notificationType: NotificationType.success }, true);
+        
+        this.cProd.images = imagesToKeep;
+        
+        this.saveProduct(null, true);
+      }
+    });
+  }
+
+```

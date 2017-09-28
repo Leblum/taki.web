@@ -4,6 +4,8 @@ import { BaseService } from './base/base.service';
 import { CONST } from '../constants';
 import { IProduct } from '../models/index';
 import { environment } from '../environments/environment';
+import { MimeType } from '../enumerations';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class ProductService extends BaseService<IProduct>{
@@ -13,4 +15,34 @@ export class ProductService extends BaseService<IProduct>{
             urlSuffix: 'products'
         });
      }
+
+     deleteProductImage(productId:string, imageId: string): Observable<Response> {
+        console.log(`About to delete image: ${imageId}`);
+        return this.http
+        .delete(`${this.serviceConfig.rootApiUrl}/${this.serviceConfig.urlSuffix}/delete-image/${productId}/${imageId}`, 
+            new RequestOptions({
+            headers: new Headers({ 
+                'Content-Type': MimeType.JSON , 
+                'x-access-token': localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION) 
+            })
+        }))
+        .map((res: Response) => {
+            return res.json();
+        }).catch(this.handleError);
+    }
+
+    deleteProductImageGroup(productId:string, orderNumber: number): Observable<Response> {
+        console.log(`About to delete image group on order: ${orderNumber}`);
+        return this.http
+        .delete(`${this.serviceConfig.rootApiUrl}/${this.serviceConfig.urlSuffix}/delete-image-group/${productId}/${orderNumber}`, 
+            new RequestOptions({
+            headers: new Headers({ 
+                'Content-Type': MimeType.JSON , 
+                'x-access-token': localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION) 
+            })
+        }))
+        .map((res: Response) => {
+            return res.json();
+        }).catch(this.handleError);
+    }
 }

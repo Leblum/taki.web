@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService, AlertService } from '../../../services/index';
 import { IProduct } from '../../../models/index';
@@ -6,6 +7,7 @@ import { ErrorEventBus } from '../../../event-buses/error.event-bus';
 import { ProductType, EnumHelper, NotificationType, ImageType } from '../../../enumerations';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 declare var $: any;
 
 
@@ -21,7 +23,7 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   dtTrigger: Subject<any> = new Subject();
-  public imageHeaders: string[] = ['Image','Url', 'Order', 'Height', 'Width', 'Is Active?', 'Actions']
+  public imageHeaders: string[] = ['Image', 'Url', 'Order', 'Height', 'Width', 'Is Active?', 'Actions']
 
   public currentProductId: string;
   public cProd: IProduct;
@@ -112,29 +114,32 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
 
   getTrimmedTags(): string[] {
     let tagsFromInput = this.tagsToAdd.split(',');
-    tagsFromInput = tagsFromInput.filter(tag =>{
+    tagsFromInput = tagsFromInput.filter(tag => {
       return tag.trim().toLowerCase().length > 0;
     })
 
     return tagsFromInput;
   }
 
-  filterImages(image: IProductImage){
-    if(image){
+  filterImages(image: IProductImage) {
+    if (image) {
       return image.type === ImageType.thumbnail;
     }
   }
 
-  deleteImage(order: number){
-    let indexLocationForDelete: number = -1;
-    let images = this.cProd.images.filter((image)=>{
-      return image.order != order;
-    })
-    this.cProd.images = images;
+  deleteImage(order: number) {
+    this.productService.deleteProductImageGroup(this.cProd._id,order).subscribe(response=>{
+      this.alertService.send({ text: `Product Images removed: ${this.cProd.displayName}`, notificationType: NotificationType.success }, true);
+      let remainingImages = this.cProd.images.filter((image) =>{
+        return image.order != order;
+      });
+      this.cProd.images = remainingImages;
+      //this.rerenderDataTable();
+    });
   }
 }
 
-export interface IProductImage{
+export interface IProductImage {
   type?: ImageType,
   url?: string,
   width?: number,
