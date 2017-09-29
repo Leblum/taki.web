@@ -1,6 +1,18 @@
 import { IBaseModel } from "./index";
 import * as enums from "../enumerations";
 
+
+export interface IProductImage {
+    _id?: string,
+    type?: enums.ImageType,
+    url?: string,
+    width?: number,
+    height?: number,
+    order?: number,
+    isActive?: boolean,
+    key?: string,
+  }
+
 export interface IProduct extends IBaseModel {
     // Add ownerships to the interface
     _id: string,
@@ -78,16 +90,7 @@ export interface IProduct extends IBaseModel {
         startDate?: Date,
         endDate?: Date,
     },
-    images?: {
-        _id?: string,
-        type?: enums.ImageType,
-        url?: string,
-        width?: number,
-        height?: number,
-        order?: number,
-        isActive?: boolean,
-        key?: string,
-    }[],
+    images?: IProductImage[],
     version?: string,
     stemAttributes?: {
         version?: string,

@@ -5,6 +5,7 @@ import * as enums from '../../../enumerations';
 import { CONST } from '../../../constants';
 import { AlertService } from '../../../services/index';
 import { environment } from '../../../environments/environment';
+import { ProductImageEventBus } from '../../../event-buses/index';
 
 interface FormData {
   concurrency: number;
@@ -26,7 +27,7 @@ export class ImageUploaderComponent implements OnInit {
   humanizeBytes: Function;
   dragOver: boolean;
 
-  constructor(private alertService: AlertService) {
+  constructor(private alertService: AlertService, private productImageEventBus: ProductImageEventBus) {
     this.formData = {
       concurrency: 1,
       autoUpload: false,
@@ -61,8 +62,9 @@ export class ImageUploaderComponent implements OnInit {
     } else if (output.type === 'drop') {
       this.dragOver = false;
     } else if (output.type === 'done'){
+        this.productImageEventBus.uploadProductImage();
+        this.uploadInput.emit({ type: 'remove', id: output.file.id });
       if(output.file.responseStatus != 200){
-
         this.alertService.send({ text: 'There was an error with the image upload', notificationType: enums.NotificationType.danger }, true);
       }
     }

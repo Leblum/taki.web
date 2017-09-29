@@ -18,6 +18,14 @@ export enum ProductType{
     tool = 3
 }
 
+export enum ProductImageEventType{
+    uploaded = 1,
+    edited = 2, 
+    saved = 3,
+    removed = 4, 
+    added = 5,
+}
+
 export enum ImageType{
     icon = 1,
     thumbnail =2,

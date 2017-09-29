@@ -4,10 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductService, AlertService } from '../../../services/index';
 import { IProduct } from '../../../models/index';
 import { ErrorEventBus } from '../../../event-buses/error.event-bus';
-import { ProductType, EnumHelper, NotificationType, ImageType } from '../../../enumerations';
+import { ProductType, EnumHelper, NotificationType, ImageType, ProductImageEventType } from '../../../enumerations';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
+import { ProductImageEventBus } from '../../../event-buses/index';
 declare var $: any;
 
 
@@ -16,14 +17,7 @@ declare var $: any;
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss']
 })
-export class ProductDetailComponent implements OnInit, AfterViewInit {
-  // Images table
-  public imagesTable;
-  dtOptions: DataTables.Settings = {};
-  @ViewChild(DataTableDirective)
-  dtElement: DataTableDirective;
-  dtTrigger: Subject<any> = new Subject();
-  public imageHeaders: string[] = ['Image', 'Url', 'Order', 'Height', 'Width', 'Is Active?', 'Actions']
+export class ProductDetailComponent implements OnInit {
 
   public currentProductId: string;
   public cProd: IProduct;
@@ -35,24 +29,36 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
   constructor(private route: ActivatedRoute,
     private errorEventBus: ErrorEventBus,
     private productService: ProductService,
-    private alertService: AlertService, ) { }
+    private alertService: AlertService,
+    private productImageEventBus: ProductImageEventBus) {
+    this.productImageEventBus.productImageChanged$.subscribe((event) => {
+      if (event.eventType === ProductImageEventType.uploaded) {
+        this.fetchProduct();
+      }
+    });
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.currentProductId = params['id'];
-      this.productService.get(this.currentProductId).subscribe((product: IProduct) => {
+      this.fetchProduct();
+    });
+  }
 
-        this.cProd = product;
-        this.selectPickerNeedsStartup = true;
+  fetchProduct() {
+    this.productService.get(this.currentProductId).subscribe((product: IProduct) => {
 
-        //  Init Bootstrap Select Picker
-        $(".selectpicker").selectpicker({
-          iconBase: "ti",
-          tickIcon: "ti-check"
-        });
-      }, error => {
-        this.errorEventBus.throw(error);
+      this.cProd = product;
+      this.selectPickerNeedsStartup = true;
+
+      //  Init Bootstrap Select Picker
+      $(".selectpicker").selectpicker({
+        iconBase: "ti",
+        tickIcon: "ti-check"
       });
+
+    }, error => {
+      this.errorEventBus.throw(error);
     });
   }
 
@@ -76,19 +82,6 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
         });
       }
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  rerenderDataTable(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-    });
   }
 
   ngAfterViewChecked() {
@@ -121,29 +114,4 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
     return tagsFromInput;
   }
 
-  filterImages(image: IProductImage) {
-    if (image) {
-      return image.type === ImageType.thumbnail;
-    }
-  }
-
-  deleteImage(order: number) {
-    this.productService.deleteProductImageGroup(this.cProd._id,order).subscribe(response=>{
-      this.alertService.send({ text: `Product Images removed: ${this.cProd.displayName}`, notificationType: NotificationType.success }, true);
-      let remainingImages = this.cProd.images.filter((image) =>{
-        return image.order != order;
-      });
-      this.cProd.images = remainingImages;
-      //this.rerenderDataTable();
-    });
-  }
-}
-
-export interface IProductImage {
-  type?: ImageType,
-  url?: string,
-  width?: number,
-  height?: number,
-  order?: number,
-  isActive?: boolean
 }

@@ -19,7 +19,7 @@ import { AlertService, AuthenticationService, ProductService } from '../services
 import { AlertComponent } from './directives/alert/alert.component';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { DashboardModule } from './dashboard/dashboard.module';
-import { ErrorEventBus } from '../event-buses/error.event-bus';
+import { ErrorEventBus, ProductImageEventBus } from '../event-buses/';
 
 @NgModule({
     imports:      [
@@ -45,7 +45,8 @@ import { ErrorEventBus } from '../event-buses/error.event-bus';
         AuthGuard,
         BaseRequestOptions,
         ProductService,
-        ErrorEventBus
+        ErrorEventBus,
+        ProductImageEventBus
     ],
     bootstrap:    [ AppComponent ]
 })
