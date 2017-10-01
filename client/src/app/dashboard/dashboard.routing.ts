@@ -15,8 +15,11 @@ export const DashboardRoutes: Routes = [{
 {
     path: 'products/list',
     component: ProductListComponent,
-}
-,
+},
+{
+    path: 'products/detail/new',
+    component: ProductDetailComponent,
+},
 {
     path: 'products/detail/:id',
     component: ProductDetailComponent,

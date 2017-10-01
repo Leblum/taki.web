@@ -40,8 +40,16 @@ export class ProductDetailComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.currentProductId = params['id'];
-      this.fetchProduct();
+      // if there isn't an id then it's a new product.
+      if (params['id']) {
+        this.currentProductId = params['id'];
+        this.fetchProduct();
+      }
+      else {
+        this.cProd = {
+          isTemplate: true,
+        }
+      }
     });
   }
 
@@ -64,22 +72,35 @@ export class ProductDetailComponent implements OnInit {
 
   saveProduct(changes: IProduct, isValid: boolean) {
     if (isValid) {
-      if (!this.isTagInputEmpty()) {
-        this.alertService.send({
-          text: `Product not saved, because tags were present, that weren't added. Add them before saving.`,
-          notificationType: NotificationType.warning
-        }, true);
-      }
-      else {
-        this.productService.update(this.cProd, this.cProd._id).subscribe(response => {
-
-          console.log(`Saved Product ${this.cProd._id}`);
-
-          this.alertService.send({ text: `Product saved: ${this.cProd.displayName}`, notificationType: NotificationType.success }, true);
-
+      // This is for when we're trying to create a new product.
+      if (this.cProd._id === undefined) {
+        this.productService.create(this.cProd).subscribe(response => {
+          this.cProd = response;
+          this.currentProductId = this.cProd._id;
+          this.alertService.send({ text: `Product created: ${this.cProd.displayName}`, notificationType: NotificationType.success }, true);
         }, error => {
           this.errorEventBus.throw(error);
         });
+      }
+      // This is for when we're saving an existing product.
+      else {
+        if (!this.isTagInputEmpty()) {
+          this.alertService.send({
+            text: `Product not saved, because tags were present, that weren't added. Add them before saving.`,
+            notificationType: NotificationType.warning
+          }, true);
+        }
+        else {
+          this.productService.update(this.cProd, this.cProd._id).subscribe(response => {
+
+            console.log(`Saved Product ${this.cProd._id}`);
+
+            this.alertService.send({ text: `Product saved: ${this.cProd.displayName}`, notificationType: NotificationType.success }, true);
+
+          }, error => {
+            this.errorEventBus.throw(error);
+          });
+        }
       }
     }
   }
@@ -101,6 +122,9 @@ export class ProductDetailComponent implements OnInit {
   }
 
   addTags() {
+    if (this.cProd.tags === undefined) {
+      this.cProd.tags = new Array<string>();
+    }
     this.cProd.tags = this.cProd.tags.concat(this.getTrimmedTags());
     this.tagsToAdd = '';
   }

@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { AppError } from '../classes/app-error.class';
 import { AlertService } from '../services/index';
-import { IProductImage } from '../models/product.interface';
+import { IImage, IImageVariation } from '../models/product.interface';
 import { IProduct } from '../models/index';
 import { ProductImageEventType } from '../enumerations';
 
 export interface IProductImageEventMessage{
-    productImage: IProductImage,
+    productImage: IImage,
     eventType: ProductImageEventType,
     relatedProduct: IProduct,
 }
@@ -19,23 +19,23 @@ export class ProductImageEventBus {
     public productImageChanged$ = this.productImageChangedSource.asObservable();
 
     // Mostly managed by the product images component.
-    public productImages: Array<IProductImage>;
+    public productImages: Array<IImage>;
 
     constructor(private alertService: AlertService){};
 
-    public addProductImage(productImage: IProductImage, product: IProduct) {
+    public addProductImage(productImage: IImage, product: IProduct) {
         this.emitMessage(productImage,ProductImageEventType.added, product);
     }
 
-    public editProductImage(productImage: IProductImage, product: IProduct){
+    public editProductImage(productImage: IImage, product: IProduct){
         this.emitMessage(productImage,ProductImageEventType.edited, product);
     }
 
-    public removeProductImage(productImage: IProductImage, product: IProduct) {
+    public removeProductImage(productImage: IImage, product: IProduct) {
         this.emitMessage(productImage,ProductImageEventType.removed, product);
     }
 
-    public saveProductImage(productImage: IProductImage, product: IProduct){
+    public saveProductImage(productImage: IImage, product: IProduct){
         this.emitMessage(productImage,ProductImageEventType.saved, product);
     }
     
@@ -43,7 +43,7 @@ export class ProductImageEventBus {
         this.emitMessage(null, ProductImageEventType.uploaded, null);
     }
     
-    private emitMessage(productImage: IProductImage, eventType: ProductImageEventType, product: IProduct){
+    private emitMessage(productImage: IImage, eventType: ProductImageEventType, product: IProduct){
         this.productImageChangedSource.next({
             eventType: eventType,
             productImage: productImage,

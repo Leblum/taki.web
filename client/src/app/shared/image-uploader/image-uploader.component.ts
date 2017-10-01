@@ -74,16 +74,13 @@ export class ImageUploaderComponent implements OnInit {
   startUpload(): void {
     const event: UploadInput = {
       type: 'uploadAll',
-      url: `${environment.ProductAPIBase}${environment.V1}/upload-images`,
+      url: `${environment.ProductAPIBase}${environment.V1}${CONST.ep.PRODUCTS}/upload-images/${this.relatedId}`,
       method: 'POST',
       concurrency: this.formData.concurrency,
       headers: {
         //'Content-Type': enums.MimeType.MULTIPART,
         'x-access-token': localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION)
       },
-      data:{
-        'relatedId': this.relatedId
-      }
     };
 
     this.uploadInput.emit(event);

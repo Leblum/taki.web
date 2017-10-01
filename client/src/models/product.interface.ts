@@ -1,22 +1,26 @@
 import { IBaseModel } from "./index";
 import * as enums from "../enumerations";
 
+export interface IImage{
+    _id?: string,
+    order?: number,
+    isActive?: boolean,
+    variations?: IImageVariation[],
+}
 
-export interface IProductImage {
+export interface IImageVariation{
     _id?: string,
     type?: enums.ImageType,
     url?: string,
     width?: number,
     height?: number,
-    order?: number,
-    isActive?: boolean,
     key?: string,
-  }
+}
 
 export interface IProduct extends IBaseModel {
     // Add ownerships to the interface
-    _id: string,
-    __v: number,
+    _id?: string,
+    __v?: number,
     ownerships?: {
         ownerId: string,
         ownershipType: enums.OwnershipType
@@ -90,7 +94,7 @@ export interface IProduct extends IBaseModel {
         startDate?: Date,
         endDate?: Date,
     },
-    images?: IProductImage[],
+    images?: IImage[],
     version?: string,
     stemAttributes?: {
         version?: string,

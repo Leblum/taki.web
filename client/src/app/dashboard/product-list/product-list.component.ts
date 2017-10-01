@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone, OnChanges, ChangeDetectorRef, SimpleChanges,
 import { ProductService, AlertService } from '../../../services/index';
 import { IProduct } from '../../../models/index';
 import { ErrorEventBus } from '../../../event-buses/error.event-bus';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { NotificationType } from '../../../enumerations';
@@ -28,6 +28,11 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit() {
     this.getProducts(false);
+    
+    // This will scroll us back up to the top when you navigate back to this page from detail views.
+    this.router.events.filter(event => event instanceof NavigationEnd).subscribe(() => {
+      window.scrollTo(0, 0);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -44,7 +49,7 @@ export class ProductListComponent implements OnInit {
   }
 
   createProduct() {
-    this.router.navigate(['dashboard/products/detail?new=true']);
+    this.router.navigate(['dashboard/products/detail/new']);
   }
 
   delete(id: string) {
@@ -60,7 +65,7 @@ export class ProductListComponent implements OnInit {
     }).then(() => {
       // Hit the product service, and delete it.
       this.productService.delete(id).subscribe((response) => {
-        this.alertService.send({text: "Product Successfully Deleted", notificationType: NotificationType.success});
+        this.alertService.send({ text: "Product Successfully Deleted", notificationType: NotificationType.success });
         this.getProducts(false);
       }, error => {
         this.errorEventBus.throw(error);

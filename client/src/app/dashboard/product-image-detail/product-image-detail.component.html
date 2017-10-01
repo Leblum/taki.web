@@ -24,7 +24,7 @@
         <label class="col-sm-2 control-label">Is Active?</label>
         <div class="col-sm-10">
           <div class="checkbox">
-            <input id="chkTemplate" type="checkbox" disabled [checked]="image?.isActive" (ngModelChange)="image.isActive=$event">
+            <input id="chkTemplate" name="imageActive"  [ngModel]="image?.isActive" type="checkbox" #imageIsActive="ngModel"  [checked]="image?.isActive" (ngModelChange)="image.isActive=$event">
             <label for="chkTemplate">Is this product image active?</label>
           </div>
         </div>

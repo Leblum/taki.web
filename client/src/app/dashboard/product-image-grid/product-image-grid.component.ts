@@ -1,11 +1,11 @@
-import { Component, OnInit, EventEmitter, Input, ViewChild, OnChanges } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input, ViewChild, OnChanges, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { UploadOutput, UploadInput, UploadFile, humanizeBytes } from 'ngx-uploader';
 import { Headers } from '@angular/http';
 import * as enums from '../../../enumerations';
 import { CONST } from '../../../constants';
 import { AlertService } from '../../../services/index';
 import { environment } from '../../../environments/environment';
-import { IProduct, IProductImage } from '../../../models/index';
+import { IProduct, IImage } from '../../../models/index';
 import { ActivatedRoute } from '@angular/router';
 import { ErrorEventBus } from '../../../event-buses/error.event-bus';
 import { ProductService } from '../../../services/product.service';
@@ -20,8 +20,10 @@ import { ProductImageEventBus } from '../../../event-buses/index';
   templateUrl: './product-image-grid.component.html',
   styleUrls: ['./product-image-grid.component.css']
 })
-export class ProductImageGridComponent implements OnChanges {
+export class ProductImageGridComponent {
   @Input() product: IProduct;
+
+  private tableInitialized: boolean = false;
 
   // Images Table properties
   @ViewChild(DataTableDirective) dtElement: DataTableDirective;
@@ -36,7 +38,7 @@ export class ProductImageGridComponent implements OnChanges {
 
   public dtTrigger: Subject<any> = new Subject();
 
-  public imageHeaders: string[] = ['Image', 'Url', 'Order', 'Height', 'Width', 'Is Active?', 'Actions']
+  public imageHeaders: string[] = ['Image', 'Url', 'Order', 'Is Active?', 'Actions']
 
   constructor(private route: ActivatedRoute,
     private errorEventBus: ErrorEventBus,
@@ -44,35 +46,31 @@ export class ProductImageGridComponent implements OnChanges {
     private alertService: AlertService, private productImageEventBus: ProductImageEventBus) {
   }
 
-  ngOnChanges() {
-
-    // Here the product is being passed in by the parent.  Because of this,
-    // we're going to trigger the data table to render whenever the parent changes our product.
-    // this might be a performance beast, but we'll see.
-    if (this.dtElement && this.dtElement.dtTrigger) {
-      this.dtElement.dtTrigger.next();
-    }
-  }
-
-  filterImages(image: IProductImage) {
+  filterImages(image: IImage) {
     if (image) {
-      return image.type === enums.ImageType.thumbnail;
+      image.variations.forEach(variation => {
+        if(variation.type === enums.ImageType.thumbnail){
+          image['url'] = variation.url;
+        }
+      });
+      return true;
     }
   }
 
-  editImage(order: number) {
+  editImage(id: string) {
    let image = this.product.images.find(image =>{
-      return image.order == order;
+      return image._id == id;
     });
 
     this.productImageEventBus.editProductImage(image, this.product);
   }
 
-  deleteImage(order: number) {
-    this.productService.deleteProductImageGroup(this.product._id, order).subscribe(response => {
+  deleteImage(id: string) {
+    this.productService.deleteProductImage(this.product._id, id).subscribe(response => {
       this.alertService.send({ text: `Product Images removed: ${this.product.displayName}`, notificationType: NotificationType.success }, true);
+
       let remainingImages = this.product.images.filter((image) => {
-        return image.order != order;
+        return image._id != id;
       });
       this.product.images = remainingImages;
     });
