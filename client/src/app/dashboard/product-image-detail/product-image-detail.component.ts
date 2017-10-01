@@ -33,17 +33,32 @@ export class ProductImageDetailComponent implements OnInit {
         return image._id == image._id;
       });
 
+      let currentImage: IImage;
+
       this.product.images.forEach((image) => {
         if (image._id === this.image._id) {
           image.isActive = this.image.isActive;
           image.order = this.image.order;
+          currentImage = image;
         }
       });
 
       this.productService.update(this.product, this.product._id).subscribe(response => {
         this.alertService.send({ text: 'Successfully updated product image.', notificationType: NotificationType.success }, true);
-      })
+      });
+
+      this.imageEventBus.saveProductImage(currentImage, this.product);
+
+      // This will basically set the ngIf to false, and hide the control.
+      this.image = undefined;
+      this.product = undefined;
     }
+  }
+
+  cancel() {
+    // This will basically set the ngIf to false, and hide the control.
+    this.image = undefined;
+    this.product = undefined;
   }
 
 }
