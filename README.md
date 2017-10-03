@@ -1,4 +1,4 @@
-# Leblum Product API 
+# Taki Dashboard Application
  
 Implementation of async - await methods in mongoose and express.
 
