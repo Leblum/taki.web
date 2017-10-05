@@ -31,11 +31,11 @@ export const DashboardRoutes: Routes = [{
     component: SupplierListComponent,
 },
 {
-    path: 'supplier/detail/new',
+    path: 'suppliers/detail/new',
     component: SupplierDetailComponent,
 },
 {
-    path: 'supplier/detail/:id',
+    path: 'suppliers/detail/:id',
     component: SupplierDetailComponent,
 }
 ];

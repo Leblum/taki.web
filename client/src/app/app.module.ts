@@ -15,7 +15,7 @@ import { AdminLayoutComponent } from './layouts/admin/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth/auth-layout.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './guards/index';
-import { AlertService, AuthenticationService, ProductService } from '../services/index';
+import { AlertService, AuthenticationService, ProductService, SupplierService } from '../services/index';
 import { AlertComponent } from './directives/alert/alert.component';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { DashboardModule } from './dashboard/dashboard.module';
@@ -45,6 +45,7 @@ import { ErrorEventBus, ProductImageEventBus } from '../event-buses/';
         AuthGuard,
         BaseRequestOptions,
         ProductService,
+        SupplierService,
         ErrorEventBus,
         ProductImageEventBus
     ],
