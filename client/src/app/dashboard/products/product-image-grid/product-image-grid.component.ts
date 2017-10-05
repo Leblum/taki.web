@@ -1,18 +1,15 @@
 import { Component, OnInit, EventEmitter, Input, ViewChild, OnChanges, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { UploadOutput, UploadInput, UploadFile, humanizeBytes } from 'ngx-uploader';
 import { Headers } from '@angular/http';
-import * as enums from '../../../enumerations';
-import { CONST } from '../../../constants';
-import { AlertService } from '../../../services/index';
-import { environment } from '../../../environments/environment';
-import { IProduct, IImage } from '../../../models/index';
+import * as enums from '../../../../enumerations';
+import { CONST } from '../../../../constants';
+import { AlertService, ProductService } from '../../../../services/index';
+import { environment } from '../../../../environments/environment';
+import { IProduct, IImage } from '../../../../models/index';
 import { ActivatedRoute } from '@angular/router';
-import { ErrorEventBus } from '../../../event-buses/error.event-bus';
-import { ProductService } from '../../../services/product.service';
+import { ErrorEventBus, ProductImageEventBus } from '../../../../event-buses/';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
-import { NotificationType } from '../../../enumerations';
-import { ProductImageEventBus } from '../../../event-buses/index';
 
 
 @Component({
@@ -67,7 +64,7 @@ export class ProductImageGridComponent {
 
   deleteImage(id: string) {
     this.productService.deleteProductImage(this.product._id, id).subscribe(response => {
-      this.alertService.send({ text: `Product Images removed: ${this.product.displayName}`, notificationType: NotificationType.success }, true);
+      this.alertService.send({ text: `Product Images removed: ${this.product.displayName}`, notificationType: enums.NotificationType.success }, true);
 
       let remainingImages = this.product.images.filter((image) => {
         return image._id != id;

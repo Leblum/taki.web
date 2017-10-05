@@ -5,13 +5,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DataTablesModule } from 'angular-datatables';
 import { OverviewComponent } from './overview/overview.component';
 import { DashboardRoutes } from './dashboard.routing';
-import { ProductListComponent } from './product-list/product-list.component';
-import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { ProductListComponent } from './products/product-list/product-list.component';
+import { ProductDetailComponent } from './products/product-detail/product-detail.component';
 import { ImageUploaderModule } from '../shared/image-uploader/image-uploader.module'
 import { CallbackFilterPipe } from '../pipes/callback-filter.pipe';
 import { NgUploaderModule } from 'ngx-uploader';
-import { ProductImageGridComponent } from './product-image-grid/product-image-grid.component';
-import { ProductImageDetailComponent } from './product-image-detail/product-image-detail.component';
+import { ProductImageGridComponent } from './products/product-image-grid/product-image-grid.component';
+import { ProductImageDetailComponent } from './products/product-image-detail/product-image-detail.component';
+import { SupplierListComponent } from './suppliers/supplier-list/supplier-list.component';
+import { SupplierDetailComponent } from './suppliers/supplier-detail/supplier-detail.component';
 
 @NgModule({
     imports: [
@@ -26,7 +28,7 @@ import { ProductImageDetailComponent } from './product-image-detail/product-imag
         OverviewComponent, 
         ProductListComponent, 
         ProductDetailComponent, 
-        CallbackFilterPipe, ProductImageGridComponent, ProductImageDetailComponent
+        CallbackFilterPipe, ProductImageGridComponent, ProductImageDetailComponent, SupplierListComponent, SupplierDetailComponent
     ]
 })
 

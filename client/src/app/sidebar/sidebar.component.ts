@@ -35,6 +35,14 @@ export const ROUTES: RouteInfo[] = [{
         children: [
             {path: 'list', title: 'Products', ab:'P'}
         ]
+    },{
+        path: '/dashboard/suppliers',
+        title: 'Suppliers',
+        type: 'sub',
+        icontype: 'ti-user',
+        children: [
+            {path: 'list', title: 'Suppliers', ab:'S'}
+        ]
     },
 ];
 

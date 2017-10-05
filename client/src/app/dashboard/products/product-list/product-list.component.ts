@@ -1,11 +1,11 @@
 import { Component, OnInit, NgZone, OnChanges, ChangeDetectorRef, SimpleChanges, ViewChild } from '@angular/core';
-import { ProductService, AlertService } from '../../../services/index';
-import { IProduct } from '../../../models/index';
-import { ErrorEventBus } from '../../../event-buses/error.event-bus';
+import { ProductService, AlertService } from '../../../../services/';
+import { IProduct } from '../../../../models/index';
+import { ErrorEventBus } from '../../../../event-buses/';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
-import { NotificationType } from '../../../enumerations';
+import { NotificationType } from '../../../../enumerations';
 declare let $: any;
 declare let swal: any;
 

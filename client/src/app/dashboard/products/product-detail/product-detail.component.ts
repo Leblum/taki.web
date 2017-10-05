@@ -1,14 +1,14 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
-import { ProductService, AlertService } from '../../../services/index';
-import { IProduct } from '../../../models/index';
-import { ErrorEventBus } from '../../../event-buses/error.event-bus';
-import { ProductType, EnumHelper, NotificationType, ImageType, ProductImageEventType } from '../../../enumerations';
+import { ProductService, AlertService } from '../../../../services/index';
+import { IProduct } from '../../../../models/index';
+import { ErrorEventBus } from '../../../../event-buses/error.event-bus';
+import { ProductType, EnumHelper, NotificationType, ImageType, ProductImageEventType } from '../../../../enumerations';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
-import { ProductImageEventBus } from '../../../event-buses/index';
+import { ProductImageEventBus } from '../../../../event-buses/index';
 declare var $: any;
 
 

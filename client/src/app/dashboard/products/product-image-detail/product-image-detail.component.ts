@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { IImage, IImageVariation, IProduct } from '../../../models/index';
-import { ProductImageEventBus } from '../../../event-buses/index';
-import { ProductImageEventType, NotificationType } from '../../../enumerations';
-import { ProductService, AlertService } from '../../../services/';
+import { IImage, IImageVariation, IProduct } from '../../../../models/index';
+import { ProductImageEventBus } from '../../../../event-buses/index';
+import { ProductImageEventType, NotificationType } from '../../../../enumerations';
+import { ProductService, AlertService } from '../../../../services/';
 
 @Component({
   selector: 'app-product-image-detail',

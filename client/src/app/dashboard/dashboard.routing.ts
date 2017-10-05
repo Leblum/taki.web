@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 
 import { OverviewComponent } from './overview/overview.component';
-import { ProductListComponent } from './product-list/product-list.component';
-import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { ProductListComponent } from './products/product-list/product-list.component';
+import { ProductDetailComponent } from './products/product-detail/product-detail.component';
+import { SupplierListComponent } from './suppliers/supplier-list/supplier-list.component';
+import { SupplierDetailComponent } from './suppliers/supplier-detail/supplier-detail.component';
 
 export const DashboardRoutes: Routes = [{
     path: '',
@@ -23,5 +25,17 @@ export const DashboardRoutes: Routes = [{
 {
     path: 'products/detail/:id',
     component: ProductDetailComponent,
+},
+{
+    path: 'suppliers/list',
+    component: SupplierListComponent,
+},
+{
+    path: 'supplier/detail/new',
+    component: SupplierDetailComponent,
+},
+{
+    path: 'supplier/detail/:id',
+    component: SupplierDetailComponent,
 }
 ];
