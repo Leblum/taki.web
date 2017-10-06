@@ -28,7 +28,7 @@ export class AuthenticationTestUtility {
         try {
             // First with the system credentials we're going to clean up the identity api.
             // get a token for the system admin account.
-            systemAuthToken = await new IdentityApiService(CONST.ep.USERS).authenticateSystemUser();
+            systemAuthToken = await IdentityApiService.getSysToken();
 
             // This will double check that we actually got a token back.
             expect(systemAuthToken).length.to.be.greaterThan(0);

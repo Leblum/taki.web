@@ -12,7 +12,6 @@ const jwt = require('jsonwebtoken');
 export class AuthenticationController {
 
     private saltRounds: Number = 5;
-    private tokenExpiration: string = '24h';
 
     public authMiddleware(request: Request, response: Response, next: NextFunction): Response {
         try {
