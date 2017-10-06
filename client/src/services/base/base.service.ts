@@ -42,8 +42,6 @@ export class BaseService<T extends IBaseModel> {
                 'Content-Type': MimeType.JSON,
                 'x-access-token': localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION)
          }),
-            // I'm not sure if I need the with credentials part or not.
-            //withCredentials: true
         });
 
         this.restUrlBuilder.withConfig({
