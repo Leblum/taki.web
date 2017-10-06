@@ -20,4 +20,5 @@ export interface ISupplier extends IBaseModel {
     pickupEmail?: string,
     isApproved?: boolean,
     isActive?: boolean,
+    href?:string,
 }
