@@ -21,4 +21,5 @@ export interface IOrder extends IBaseModel {
     notes?: string,
     itemsHash?: string,
     items?: Array<IOrderItem>,
+    href?: string,
 }

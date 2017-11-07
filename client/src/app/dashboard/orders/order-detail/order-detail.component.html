@@ -60,11 +60,14 @@
 
                 <div class="form-group" [ngClass]="{ 'has-error': wooOrderNumber.invalid && f.submitted}">
                   <label class="col-sm-2 control-label">Woo Commerce Order Number</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-5">
                     <input type="text" name="wooOrderNumber" #wooOrderNumber="ngModel" (ngModelChange)="order.wooOrderNumber=$event" class="form-control"
                       [ngModel]="order?.wooOrderNumber">
                     <span class="help-block">Woo Commerce Order Number</span>
                   </div>
+                  <div class="col-sm-5">
+                      <button type="submit" class="btn btn-fill btn-wd" (click)="getWooCommerceDetails()" >Pull details from Woocommerce</button>
+                    </div>
                 </div>
 
                 <div class="form-group" [ngClass]="{ 'has-error': wooCustomerId.invalid && f.submitted}">

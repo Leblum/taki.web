@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
-import { OrderService, AlertService } from '../../../../services/index';
+import { OrderService, AlertService, WooCommerceService } from '../../../../services/index';
 import { IOrder,IEmail } from '../../../../models/index';
 import { ErrorEventBus } from '../../../../event-buses/error.event-bus';
 import * as enums from '../../../../enumerations';
@@ -27,7 +27,9 @@ export class OrderDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private errorEventBus: ErrorEventBus,
     private orderService: OrderService,
-    private alertService: AlertService) {
+    private alertService: AlertService,
+    private wooService: WooCommerceService
+  ) {
   }
 
   ngOnInit() {
@@ -91,6 +93,13 @@ export class OrderDetailComponent implements OnInit {
         });
       }
     }
+  }
+
+  getWooCommerceDetails(){
+    this.wooService.getOrder(Number(this.order.wooOrderNumber)).subscribe(wooOrder =>{
+      this.order.total = Number(wooOrder.total);
+      this.order.tax = Number(wooOrder.total_tax);
+    })
   }
 
   ngAfterViewChecked() {

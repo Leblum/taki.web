@@ -20,6 +20,7 @@ import { AlertComponent } from './directives/alert/alert.component';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ErrorEventBus, ProductImageEventBus } from '../event-buses/';
+import { WooCommerceService } from '../services/woocommerce.service';
 
 @NgModule({
     imports:      [
@@ -48,7 +49,8 @@ import { ErrorEventBus, ProductImageEventBus } from '../event-buses/';
         SupplierService,
         ErrorEventBus,
         OrderService,
-        ProductImageEventBus
+        ProductImageEventBus,
+        WooCommerceService
     ],
     bootstrap:    [ AppComponent ]
 })
