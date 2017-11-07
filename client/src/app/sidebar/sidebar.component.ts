@@ -25,7 +25,7 @@ export const ROUTES: RouteInfo[] = [{
         type: 'sub',
         icontype: 'ti-stats-up',
         children: [
-            {path: 'overview', title: 'Overview', ab:'O'}
+            {path: 'overview', title: 'Overview', ab:'Ov'}
         ]
     },{
         path: '/dashboard/products',
@@ -42,6 +42,14 @@ export const ROUTES: RouteInfo[] = [{
         icontype: 'ti-user',
         children: [
             {path: 'list', title: 'Suppliers', ab:'S'}
+        ]
+    },{
+        path: '/dashboard/orders',
+        title: 'Orders',
+        type: 'sub',
+        icontype: 'ti-receipt',
+        children: [
+            {path: 'list', title: 'Orders', ab:'O'}
         ]
     },
 ];

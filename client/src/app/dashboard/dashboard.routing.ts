@@ -5,6 +5,8 @@ import { ProductListComponent } from './products/product-list/product-list.compo
 import { ProductDetailComponent } from './products/product-detail/product-detail.component';
 import { SupplierListComponent } from './suppliers/supplier-list/supplier-list.component';
 import { SupplierDetailComponent } from './suppliers/supplier-detail/supplier-detail.component';
+import { OrderListComponent } from './orders/order-list/order-list.component';
+import { OrderDetailComponent } from './orders/order-detail/order-detail.component';
 
 export const DashboardRoutes: Routes = [{
     path: '',
@@ -37,5 +39,17 @@ export const DashboardRoutes: Routes = [{
 {
     path: 'suppliers/detail/:id',
     component: SupplierDetailComponent,
+},
+{
+    path: 'orders/list',
+    component: OrderListComponent,
+},
+{
+    path: 'orders/detail/new',
+    component: OrderDetailComponent,
+},
+{
+    path: 'orders/detail/:id',
+    component: OrderDetailComponent,
 }
 ];

@@ -1,0 +1,150 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Edit Order Details</h2>
+          </div>
+          <div class="card-content">
+            <form #f="ngForm" novalidate (ngSubmit)="saveOrder(f.value, f.valid)" class="form-horizontal">
+              <fieldset>
+                <legend>Important Details</legend>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Order Id</label>
+                  <div class="col-sm-10">
+                    <p class="form-control-static">{{order?._id}}</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Order Number</label>
+                  <div class="col-sm-10">
+                    <p class="form-control-static">{{order?.orderNumber}}</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Order Code</label>
+                  <div class="col-sm-10">
+                    <p class="form-control-static">{{order?.code}}</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Order Status</label>
+                  <div class="col-sm-10">
+                    <div class="dropdown" style="width:200px;">
+                        <select class="selectpicker" name="orderStatus" [ngModel]="order?.status" (ngModelChange)="order.status=$event" #orderStatus="ngModel" data-style="btn btn-info btn-block" title="Order Status" data-size="7">
+                            <option *ngFor="let orderStatus of orderStatuses" [value]="orderStatus.value" [selected]="order?.status == orderStatus.value">
+                                {{orderStatus.name}}
+                            </option>
+                        </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" >
+                  <label class="col-sm-2 control-label">Notes</label>
+                  <div class="col-sm-10">
+                    <textarea class="form-control" placeholder="Notes" rows="2" name="notes" #notes="ngModel" class="form-control" [ngModel]="order?.notes"  (ngModelChange)="order.notes=$event">
+                    </textarea>
+                    <span class="help-block">Order Notes</span>
+                  </div>
+                </div>
+
+              </fieldset>
+
+              <fieldset>
+                <legend>Woo Commerce Information</legend>
+
+                <div class="form-group" [ngClass]="{ 'has-error': wooOrderNumber.invalid && f.submitted}">
+                  <label class="col-sm-2 control-label">Woo Commerce Order Number</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="wooOrderNumber" #wooOrderNumber="ngModel" (ngModelChange)="order.wooOrderNumber=$event" class="form-control"
+                      [ngModel]="order?.wooOrderNumber">
+                    <span class="help-block">Woo Commerce Order Number</span>
+                  </div>
+                </div>
+
+                <div class="form-group" [ngClass]="{ 'has-error': wooCustomerId.invalid && f.submitted}">
+                  <label class="col-sm-2 control-label">Woo Commerce Customer Id</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="wooCustomerId" #wooCustomerId="ngModel" (ngModelChange)="order.wooCustomerId=$event" class="form-control"
+                      [ngModel]="order?.wooCustomerId">
+                    <span class="help-block">Woo Commerce Customer Id</span>
+                  </div>
+                </div>
+
+              </fieldset>
+
+              <fieldset>
+
+                <legend>Pricing</legend>
+
+                <div class="form-group">
+                   <!-- you can add this pipe at the end of the ngModel expression... but the saving won't work | currency:'USD':true:'1.2-2' -->
+                  <label class="col-sm-2 control-label">Subtotal</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="subtotal" #subtotal="ngModel" (ngModelChange)="order.subtotal=$event" class="form-control"
+                      [ngModel]="order?.subtotal">
+                    <span class="help-block">Order Subtotal</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                     <!-- you can add this pipe at the end of the ngModel expression... but the saving won't work | currency:'USD':true:'1.2-2' -->                  
+                    <label class="col-sm-2 control-label">Tax</label>
+                    <div class="col-sm-10">
+                      <input type="text" name="tax" #tax="ngModel" (ngModelChange)="order.tax=$event" class="form-control"
+                        [ngModel]="order?.tax">
+                      <span class="help-block">Order Tax</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                     <!-- you can add this pipe at the end of the ngModel expression... but the saving won't work | currency:'USD':true:'1.2-2' -->                    
+                      <label class="col-sm-2 control-label">Order Total</label>
+                      <div class="col-sm-10">
+                        <input type="text" name="total" #total="ngModel" (ngModelChange)="order.total=$event" class="form-control"
+                          [ngModel]="order?.total">
+                        <span class="help-block">Order Total</span>
+                      </div>
+                    </div>
+
+              </fieldset>
+
+              <fieldset>
+                  <legend>Items</legend>
+                  
+  
+                </fieldset>
+
+              <fieldset>
+                <legend>Technical Details</legend>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">API Location</label>
+                  <div class="col-sm-10">
+                    <p class="form-control-static">{{order?.href}}</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Version</label>
+                  <div class="col-sm-10">
+                    <p class="form-control-static">{{order?.__v}}</p>
+                  </div>
+                </div>
+              </fieldset>
+              <button type="submit" class="btn btn-fill btn-wd ">Save</button>
+            </form>
+          </div>
+        </div>
+        <!-- end card -->
+      </div>
+      <!-- end col-md-12 -->
+    </div>
+    <!-- end row -->
+  </div>
+</div>

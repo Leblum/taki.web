@@ -7,7 +7,7 @@ import { ProductService, AlertService } from '../../../../services/';
 @Component({
   selector: 'app-product-image-detail',
   templateUrl: './product-image-detail.component.html',
-  styleUrls: ['./product-image-detail.component.css']
+  styleUrls: []
 })
 export class ProductImageDetailComponent implements OnInit {
 

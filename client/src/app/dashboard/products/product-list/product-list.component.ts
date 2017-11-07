@@ -100,5 +100,4 @@ export class ProductListComponent implements OnInit {
   refreshProducts() {
     this.getProducts(true);
   }
-
 }

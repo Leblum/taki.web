@@ -15,7 +15,7 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'app-product-image-grid',
   templateUrl: './product-image-grid.component.html',
-  styleUrls: ['./product-image-grid.component.css']
+  styleUrls: []
 })
 export class ProductImageGridComponent {
   @Input() product: IProduct;

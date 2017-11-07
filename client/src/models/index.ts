@@ -6,3 +6,5 @@ export * from './contact.interface';
 export * from './address.interface';
 export * from './email.interface';
 export * from './phone.interface';
+export * from './order.interface';
+export * from './order-item.interface';

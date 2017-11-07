@@ -13,10 +13,10 @@ declare var $: any;
 @Component({
   selector: 'app-supplier-detail',
   templateUrl: './supplier-detail.component.html',
-  styleUrls: ['./supplier-detail.component.css']
+  styleUrls: []
 })
 export class SupplierDetailComponent implements OnInit {
-
+// Commentary
   public currentSupplierId: string;
   public supplier: ISupplier;
 

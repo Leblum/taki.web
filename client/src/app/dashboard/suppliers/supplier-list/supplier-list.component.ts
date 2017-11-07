@@ -12,7 +12,7 @@ declare let swal: any;
 @Component({
   selector: 'app-supplier-list',
   templateUrl: './supplier-list.component.html',
-  styleUrls: ['./supplier-list.component.css']
+  styleUrls: []
 })
 export class SupplierListComponent implements OnInit {
   public headers: string[] = ['Id', 'Name', 'Is Approved?', 'Is Active?', 'Slug','Company Phone', 'Pickup Phone', 'Actions']
