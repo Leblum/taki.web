@@ -17,22 +17,23 @@ export class WooCommerceService extends BaseService<WooCommerce.Order>{
      }
 
      public getOrder(id: number): Observable<WooCommerce.Order>{
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('consumer_key',environment.WooConsumerKey);
-        params.set('consumer_secret',environment.WooConsumerSecret);
+        //params.append('consumer_key',environment.WooConsumerKey);
+        //params.append('consumer_secret',environment.WooConsumerSecret);
+
         let headers = new Headers();
         if(environment.production == false){
             headers.append("Authorization", "Basic " + btoa(environment.WooStagingUser + ":" + environment.WooStagingPass)); 
             headers.append("Content-Type", "application/x-www-form-urlencoded");
         }
 
+        console.log('about to hit woocommerce');
+        //console.dir(params.getAll('consumer_key'));
         return this.http
-            .get(this.serviceConfig.rootApiUrl,{
-                params: params,
+            .get('/woo/' + this.serviceConfig.rootApiUrl + '/orders' + `/${id}`  + `?consumer_key=${environment.WooConsumerKey}&consumer_secret=${environment.WooConsumerSecret}`,{
                 headers: headers,
             })
             .map((res: Response) => {
-                console.dir(res);
+                console.dir(res.json());
                 return res.json();
             })
             .catch(this.handleError);

@@ -8,6 +8,7 @@ import * as helmet from 'helmet';
 import * as rimraf from 'rimraf';
 import * as crypto from 'crypto';
 import * as mime from 'mime';
+import * as request from 'request';
 
 //import * as routers from './routers';
 
@@ -184,6 +185,13 @@ class Application {
 
   private client(): void {
     log.info('Initializing Client');
+
+    // Forward all requests from /woo to wherever the url points.
+    // This will allow us to proxy requests, which will bypass cors.  
+    this.express.use('/woo/*', (req, res) => {
+      var url = req.originalUrl.replace(/\/woo\//, '');
+      req.pipe(request(url)).pipe(res);
+    });
 
     // this allows you to see the files uploaded in dev http://localhost:8080/uploads/067e2ad8ca80503b9ae41c9c06855a9a-1afd01789a7015a436d35c6914236865-1493816227467.jpeg
     this.express.use('/uploads', express.static( path.resolve(__dirname,'../img-uploads/')));
