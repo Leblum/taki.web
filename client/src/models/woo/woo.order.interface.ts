@@ -27,6 +27,8 @@ export interface LineItem {
     meta_data: any[];
     sku: string;
     price: number;
+    // These are virtuals that are making it easier for me to build a grid with all the details I want
+    permalink?: string;
     image_url: string;
 }
 

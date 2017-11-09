@@ -92,7 +92,7 @@
                   </div>
                   <label class="col-sm-2 control-label">Total Customer Spend: </label>
                   <div class="col-sm-1">
-                    <p class="form-control-static row-data">{{wooCustomer?.total_spent}}</p>
+                    <p class="form-control-static row-data">{{wooCustomer?.total_spent | currency:'USD':true:'1.2-2'}}</p>
                   </div>
                 </div>
 
@@ -122,12 +122,12 @@
                         </tfoot>
                         <tbody>
                             <tr *ngFor="let lineItem of wooOrder?.line_items">
-                                <td><img [src]="lineItem?.image_url"/></td>
+                                <td><a [href]="lineItem.permalink" target="_blank"><img [src]="lineItem?.image_url"/></a></td>
                                 <td>{{ lineItem.name }}</td>
                                 <td>{{ lineItem.product_id }}</td>
-                                <td>{{ lineItem.price }}</td>
+                                <td>{{ lineItem.price | currency:'USD':true:'1.2-2' }}</td>
                                 <td>{{ lineItem.quantity }}</td>
-                                <td>{{ lineItem.total }}</td>
+                                <td>{{ lineItem.total | currency:'USD':true:'1.2-2'}}</td>
                             </tr>
                         </tbody>
                     </table>
