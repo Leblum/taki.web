@@ -26,6 +26,7 @@ export class OrderDetailComponent implements OnInit {
 
   public selectPickerNeedsStartup: boolean = true;
   public orderStatuses = enums.EnumHelper.getSelectors(enums.OrderStatus);
+  // We need to setup a workflow for orders.
   //public currentOrderStatus = this.order && this.order.status ? this.order.status : enums.OrderStatus.entered;
 
   constructor(private route: ActivatedRoute,
