@@ -22,7 +22,7 @@ export class OrderDetailComponent implements OnInit {
   public order: IOrder;
   public wooCustomer: Customer;
   public wooOrder: Order;
-  public wooProductHeaders:string[] = ['Name', 'Product ID', 'Price', 'Quantity', 'Total'];
+  public wooProductHeaders:string[] = ['Image','Name', 'Product ID', 'Price', 'Quantity', 'Total'];
 
   public selectPickerNeedsStartup: boolean = true;
   public orderStatuses = enums.EnumHelper.getSelectors(enums.OrderStatus);
@@ -108,14 +108,7 @@ export class OrderDetailComponent implements OnInit {
       this.order.total = Number(wooOrder.total);
       this.order.tax = Number(wooOrder.total_tax);
       this.wooOrder = wooOrder;
-      if(this.wooOrder.line_items && this.wooOrder.line_items.length > 0){
-        for (let i = 0; i < this.wooOrder.line_items.length; i++) {
-          let lineItem = this.wooOrder.line_items[i];
-          //Now we're going to go fetch the product images for our grid.
-          const wooProduct = this.wooService.getProduct(lineItem.product_id).subscribe()
-        }
-      }
-
+      this.getWooImages();
       return wooOrder;
     })
     .flatMap(wooOrder =>{
@@ -131,7 +124,18 @@ export class OrderDetailComponent implements OnInit {
     }, error => {this.errorEventBus.throw(error)});
   }
 
-  priate 
+  //src="//staging.leblum.com/app/uploads/2017/06/PinkPeony_3-150x150.jpg" >
+  private getWooImages(){
+    if(this.wooOrder.line_items && this.wooOrder.line_items.length > 0){
+      for (let i = 0; i < this.wooOrder.line_items.length; i++) {
+        let lineItem = this.wooOrder.line_items[i];
+        //Now we're going to go fetch the product images for our grid.
+        const wooProduct = this.wooService.getProduct(lineItem.product_id).subscribe(product =>{
+          lineItem.image_url = product.images[0].src.replace('.jpg', '').concat('-150x150.jpg');
+        }, error => {this.errorEventBus.throw(error)});
+      }
+    }
+  }
 
   ngAfterViewChecked() {
     if (this.selectPickerNeedsStartup) {

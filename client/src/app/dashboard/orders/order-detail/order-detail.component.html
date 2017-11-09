@@ -82,12 +82,12 @@
                   <div class="col-sm-1">
                     <p class="form-control-static row-data">{{wooCustomer?.first_name}}</p>
                   </div>
-                  <label class="col-sm-2 control-label">Last Name: </label>
+                  <label class="col-sm-1 control-label">Last Name: </label>
                   <div class="col-sm-1">
                     <p class="form-control-static row-data">{{wooCustomer?.last_name}}</p>
                   </div>
-                  <label class="col-sm-2 control-label">Email: </label>
-                  <div class="col-sm-1">
+                  <label class="col-sm-1 control-label">Email: </label>
+                  <div class="col-sm-2">
                     <p class="form-control-static row-data">{{wooCustomer?.email}}</p>
                   </div>
                   <label class="col-sm-2 control-label">Total Customer Spend: </label>
@@ -107,6 +107,7 @@
                                 <th>{{ wooProductHeaders[2] }}</th>
                                 <th>{{ wooProductHeaders[3] }}</th>
                                 <th>{{ wooProductHeaders[4] }}</th>
+                                <th>{{ wooProductHeaders[5] }}</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -116,10 +117,12 @@
                                 <th>{{ wooProductHeaders[2] }}</th>
                                 <th>{{ wooProductHeaders[3] }}</th>
                                 <th>{{ wooProductHeaders[4] }}</th>
+                                <th>{{ wooProductHeaders[5] }}</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             <tr *ngFor="let lineItem of wooOrder?.line_items">
+                                <td><img [src]="lineItem?.image_url"/></td>
                                 <td>{{ lineItem.name }}</td>
                                 <td>{{ lineItem.product_id }}</td>
                                 <td>{{ lineItem.price }}</td>
