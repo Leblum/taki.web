@@ -8,4 +8,3 @@ export * from './email.interface';
 export * from './phone.interface';
 export * from './order.interface';
 export * from './order-item.interface';
-export * from './woo.order.interface';  

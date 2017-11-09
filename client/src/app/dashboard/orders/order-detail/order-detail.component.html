@@ -70,15 +70,66 @@
                     </div>
                 </div>
 
-                <div class="form-group" [ngClass]="{ 'has-error': wooCustomerId.invalid && f.submitted}">
+                <div class="form-group" >
                   <label class="col-sm-2 control-label">Woo Commerce Customer Id</label>
                   <div class="col-sm-10">
-                    <input type="text" name="wooCustomerId" #wooCustomerId="ngModel" (ngModelChange)="order.wooCustomerId=$event" class="form-control"
-                      [ngModel]="order?.wooCustomerId">
-                    <span class="help-block">Woo Commerce Customer Id</span>
+                    <p class="form-control-static">{{order?.wooCustomerId}}</p>
                   </div>
                 </div>
 
+                <div class="form-group" >
+                  <label class="col-sm-2 control-label">First Name: </label>
+                  <div class="col-sm-1">
+                    <p class="form-control-static row-data">{{wooCustomer?.first_name}}</p>
+                  </div>
+                  <label class="col-sm-2 control-label">Last Name: </label>
+                  <div class="col-sm-1">
+                    <p class="form-control-static row-data">{{wooCustomer?.last_name}}</p>
+                  </div>
+                  <label class="col-sm-2 control-label">Email: </label>
+                  <div class="col-sm-1">
+                    <p class="form-control-static row-data">{{wooCustomer?.email}}</p>
+                  </div>
+                  <label class="col-sm-2 control-label">Total Customer Spend: </label>
+                  <div class="col-sm-1">
+                    <p class="form-control-static row-data">{{wooCustomer?.total_spent}}</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Woo Commerce Line Items:</label>
+                    <div class="col-sm-10">
+                      <table id="wooProductsTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>{{ wooProductHeaders[0] }}</th>
+                                <th>{{ wooProductHeaders[1] }}</th>
+                                <th>{{ wooProductHeaders[2] }}</th>
+                                <th>{{ wooProductHeaders[3] }}</th>
+                                <th>{{ wooProductHeaders[4] }}</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>{{ wooProductHeaders[0] }}</th>
+                                <th>{{ wooProductHeaders[1] }}</th>
+                                <th>{{ wooProductHeaders[2] }}</th>
+                                <th>{{ wooProductHeaders[3] }}</th>
+                                <th>{{ wooProductHeaders[4] }}</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr *ngFor="let lineItem of wooOrder?.line_items">
+                                <td>{{ lineItem.name }}</td>
+                                <td>{{ lineItem.product_id }}</td>
+                                <td>{{ lineItem.price }}</td>
+                                <td>{{ lineItem.quantity }}</td>
+                                <td>{{ lineItem.total }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
               </fieldset>
 
               <fieldset>
@@ -86,22 +137,10 @@
                 <legend>Pricing</legend>
 
                 <div class="form-group">
-                   <!-- you can add this pipe at the end of the ngModel expression... but the saving won't work | currency:'USD':true:'1.2-2' -->
-                  <label class="col-sm-2 control-label">Subtotal</label>
-                  <div class="col-sm-10">
-                    <input type="text" name="subtotal" #subtotal="ngModel" (ngModelChange)="order.subtotal=$event" class="form-control"
-                      [ngModel]="order?.subtotal">
-                    <span class="help-block">Order Subtotal</span>
-                  </div>
-                </div>
-
-                <div class="form-group">
                      <!-- you can add this pipe at the end of the ngModel expression... but the saving won't work | currency:'USD':true:'1.2-2' -->                  
                     <label class="col-sm-2 control-label">Tax</label>
                     <div class="col-sm-10">
-                      <input type="text" name="tax" #tax="ngModel" (ngModelChange)="order.tax=$event" class="form-control"
-                        [ngModel]="order?.tax">
-                      <span class="help-block">Order Tax</span>
+                      <p class="form-control-static">{{order?.tax}}</p>
                     </div>
                   </div>
 
@@ -109,9 +148,7 @@
                      <!-- you can add this pipe at the end of the ngModel expression... but the saving won't work | currency:'USD':true:'1.2-2' -->                    
                       <label class="col-sm-2 control-label">Order Total</label>
                       <div class="col-sm-10">
-                        <input type="text" name="total" #total="ngModel" (ngModelChange)="order.total=$event" class="form-control"
-                          [ngModel]="order?.total">
-                        <span class="help-block">Order Total</span>
+                        <p class="form-control-static">{{order?.total}}</p>
                       </div>
                     </div>
 

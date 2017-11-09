@@ -27,6 +27,7 @@ export class AuthenticationController {
                     }
                     else {
                         var token: ITokenPayload = decoded;
+                        console.log('User Roles: ', token.roles);
                         request[CONST.REQUEST_TOKEN_LOCATION] = token;
                         next();
                     }

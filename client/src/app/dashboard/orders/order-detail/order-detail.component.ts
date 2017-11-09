@@ -8,17 +8,21 @@ import * as enums from '../../../../enumerations';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
+import { Customer, Order } from '../../../../models/woo/index';
 declare var $: any;
 
 @Component({
   selector: 'app-order-detail',
   templateUrl: './order-detail.component.html',
-  styleUrls: []
+  styleUrls: ['./order-detail.component.scss']
 })
 export class OrderDetailComponent implements OnInit {
 // Commentary
   public currentOrderId: string;
   public order: IOrder;
+  public wooCustomer: Customer;
+  public wooOrder: Order;
+  public wooProductHeaders:string[] = ['Name', 'Product ID', 'Price', 'Quantity', 'Total'];
 
   public selectPickerNeedsStartup: boolean = true;
   public orderStatuses = enums.EnumHelper.getSelectors(enums.OrderStatus);
@@ -63,6 +67,9 @@ export class OrderDetailComponent implements OnInit {
       });
 
       this.order = order;
+      if(this.order && this.order.wooOrderNumber){
+        this.getWooCommerceDetails();
+      }
     }, error => {
       this.errorEventBus.throw(error);
     });
@@ -96,11 +103,35 @@ export class OrderDetailComponent implements OnInit {
   }
 
   getWooCommerceDetails(){
-    this.wooService.getOrder(Number(this.order.wooOrderNumber)).subscribe(wooOrder =>{
+    this.wooService.getOrder(Number(this.order.wooOrderNumber))
+    .map(wooOrder =>{
       this.order.total = Number(wooOrder.total);
       this.order.tax = Number(wooOrder.total_tax);
+      this.wooOrder = wooOrder;
+      if(this.wooOrder.line_items && this.wooOrder.line_items.length > 0){
+        for (let i = 0; i < this.wooOrder.line_items.length; i++) {
+          let lineItem = this.wooOrder.line_items[i];
+          //Now we're going to go fetch the product images for our grid.
+          const wooProduct = this.wooService.getProduct(lineItem.product_id).subscribe()
+        }
+      }
+
+      return wooOrder;
     })
+    .flatMap(wooOrder =>{
+      console.log('About to fetch customer');
+      if(wooOrder && wooOrder.customer_id){
+        console.log('Fetching customer');
+        this.order.wooCustomerId = wooOrder.customer_id.toString();
+        return this.wooService.getCustomer(wooOrder.customer_id)
+      }
+    })
+    .subscribe(wooCustomer => {
+      this.wooCustomer = wooCustomer;
+    }, error => {this.errorEventBus.throw(error)});
   }
+
+  priate 
 
   ngAfterViewChecked() {
     if (this.selectPickerNeedsStartup) {

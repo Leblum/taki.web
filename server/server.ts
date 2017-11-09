@@ -186,9 +186,12 @@ class Application {
   private client(): void {
     log.info('Initializing Client');
 
-    // Forward all requests from /woo to wherever the url points.
-    // This will allow us to proxy requests, which will bypass cors.  
-    this.express.use('/woo/*', (req, res) => {
+    // Forward all requests from /woo to wherever the url points.  This will allow us to proxy requests, which will bypass cors.  
+    // TODO: Remove this proxy whenever we get cors setup on the leblum site.  We're locking this down to admins only
+    // because I don't want this proxy to be 'open' even though in theory this wouldn't be able to be called.  At least this will limit it to 
+    // users who have admin role.
+    this.express.use('/woo/*', new AuthenticationController().authMiddleware, Authz.permit(CONST.ADMIN_ROLE), (req, res) => {
+      // This will peel off any local url, and send the request on.  This will pipe the request, and response back and forth.
       var url = req.originalUrl.replace(/\/woo\//, '');
       req.pipe(request(url)).pipe(res);
     });
