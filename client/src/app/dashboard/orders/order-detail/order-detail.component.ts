@@ -22,7 +22,7 @@ export class OrderDetailComponent implements OnInit {
   public order: IOrder;
   public wooCustomer: Customer;
   public wooOrder: Order;
-  public wooProductHeaders:string[] = ['Image','Name', 'Product ID','Price', 'Quantity', 'Total'];
+  public wooProductHeaders:string[] = ['View on Market','Name', 'Product ID','Price', 'Quantity', 'Total'];
 
   public selectPickerNeedsStartup: boolean = true;
   public orderStatuses = enums.EnumHelper.getSelectors(enums.OrderStatus);
