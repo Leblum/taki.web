@@ -1,15 +1,22 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
-import { OrderService, AlertService, WooCommerceService } from '../../../../services/index';
-import { IOrder,IEmail } from '../../../../models/index';
+import { OrderService, AlertService, WooCommerceService, SupplierService } from '../../../../services/index';
+import { IOrder,IEmail, ISupplier } from '../../../../models/index';
 import { ErrorEventBus } from '../../../../event-buses/error.event-bus';
 import * as enums from '../../../../enumerations';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { Customer, Order } from '../../../../models/woo/index';
+import { CompleterService, CompleterData, CompleterCmp } from 'ng2-completer';
 declare var $: any;
+
+export interface SupplierSearchData{
+  name: string,
+  slug: string,
+  id: string, 
+}
 
 @Component({
   selector: 'app-order-detail',
@@ -20,9 +27,17 @@ export class OrderDetailComponent implements OnInit {
 // Commentary
   public currentOrderId: string;
   public order: IOrder;
+
   public wooCustomer: Customer;
   public wooOrder: Order;
   public wooProductHeaders:string[] = ['View on Market','Name', 'Product ID','Price', 'Quantity', 'Total'];
+
+  // Supplier Type ahead searching
+  public searchStr: string;
+  public dataService: CompleterData;
+  protected searchData: SupplierSearchData[] = null;
+  protected selectedSupplierId: string;
+  @ViewChild("supplierDDL") private supplierDropDown: CompleterCmp;
 
   public selectPickerNeedsStartup: boolean = true;
   public orderStatuses = enums.EnumHelper.getSelectors(enums.OrderStatus);
@@ -33,11 +48,36 @@ export class OrderDetailComponent implements OnInit {
     private errorEventBus: ErrorEventBus,
     private orderService: OrderService,
     private alertService: AlertService,
-    private wooService: WooCommerceService
+    private wooService: WooCommerceService,
+    private completerService: CompleterService,
+    private supplierService: SupplierService,
   ) {
+    
   }
 
+  public onSupplierSelected(selected: any) {
+    console.log('About to set the supplier ID.')
+    if (selected) {
+      console.log('Setting the supplierID');
+        this.order.supplier = selected.originalObject.id;
+    } else {
+      console.log('Removing the supplier ID');
+        this.order.supplier = '';
+    }
+}
+
   ngOnInit() {
+    this.supplierService.getList().subscribe((suppliers: ISupplier[]) =>{
+      this.searchData = suppliers.map( supplier =>{
+        return { 
+          name: supplier.name,
+          slug: supplier.slug,
+          id: supplier._id, 
+        }
+      });
+      this.dataService = this.completerService.local(this.searchData, 'name,slug', 'name');    
+    });
+
     this.route.params.subscribe(params => {
       // if there isn't an id then it's a new order.
       if (params['id']) {
@@ -60,6 +100,11 @@ export class OrderDetailComponent implements OnInit {
         order.items = [];
       }
 
+      if(order.supplier){
+        this.supplierDropDown.value = (order.supplier as ISupplier).name;
+        this.supplierDropDown.writeValue((order.supplier as ISupplier).name);
+      }
+
       this.selectPickerNeedsStartup = true;
       //  Init Bootstrap Select Picker
       $(".selectpicker").selectpicker({
@@ -68,6 +113,7 @@ export class OrderDetailComponent implements OnInit {
       });
 
       this.order = order;
+
       if(this.order && this.order.wooOrderNumber){
         this.getWooCommerceDetails();
       }
@@ -90,6 +136,7 @@ export class OrderDetailComponent implements OnInit {
       }
       // This is for when we're saving an existing order.
       else {
+        console.log('Current order supplierID ', this.order.supplier);
         this.orderService.update(this.order, this.order._id).subscribe(response => {
 
           console.log(`Saved Order ${this.order._id}`);
@@ -117,7 +164,7 @@ export class OrderDetailComponent implements OnInit {
       if(wooOrder && wooOrder.customer_id){
         console.log('Fetching customer');
         this.order.wooCustomerId = wooOrder.customer_id.toString();
-        return this.wooService.getCustomer(wooOrder.customer_id)
+        return this.wooService.getCustomer(wooOrder.customer_id);
       }
     })
     .subscribe(wooCustomer => {
@@ -125,13 +172,16 @@ export class OrderDetailComponent implements OnInit {
     }, error => {this.errorEventBus.throw(error)});
   }
 
-  //src="//staging.leblum.com/app/uploads/2017/06/PinkPeony_3-150x150.jpg" >
+
   private getProductVirtuals(){
     if(this.wooOrder.line_items && this.wooOrder.line_items.length > 0){
       for (let i = 0; i < this.wooOrder.line_items.length; i++) {
         let lineItem = this.wooOrder.line_items[i];
         //Now we're going to go fetch the product images for our grid.
         const wooProduct = this.wooService.getProduct(lineItem.product_id).subscribe(product =>{
+
+          // This is the format for images that are stored up in wordpress.  so we're tacking on the -150 to get the thumbnail version of the first image in the list.
+          //src="//staging.leblum.com/app/uploads/2017/06/PinkPeony_3-150x150.jpg" >
           lineItem.image_url = product.images[0].src.replace('.jpg', '').concat('-150x150.jpg');
           lineItem.permalink = product.permalink;
         }, error => {this.errorEventBus.throw(error)});

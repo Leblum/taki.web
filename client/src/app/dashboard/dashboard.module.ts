@@ -16,6 +16,7 @@ import { SupplierListComponent } from './suppliers/supplier-list/supplier-list.c
 import { SupplierDetailComponent } from './suppliers/supplier-detail/supplier-detail.component';
 import { OrderDetailComponent } from './orders/order-detail/order-detail.component';
 import { OrderListComponent } from './orders/order-list/order-list.component';
+import { Ng2CompleterModule } from "ng2-completer";
 
 @NgModule({
     imports: [
@@ -24,7 +25,8 @@ import { OrderListComponent } from './orders/order-list/order-list.component';
         FormsModule,
         DataTablesModule,
         ImageUploaderModule,
-        NgUploaderModule
+        NgUploaderModule,
+        Ng2CompleterModule
     ],
     declarations: [
         OverviewComponent, 

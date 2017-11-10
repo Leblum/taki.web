@@ -32,6 +32,22 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="col-sm-2 control-label">Supplier</label>
+                    <div class="col-sm-10">
+                        <ng2-completer 
+                            #supplierDDL
+                            inputClass="form-control dropdown" 
+                            name="supplier" 
+                            [(ngModel)]="searchStr" 
+                            [datasource]="dataService" 
+                            [minSearchLength]="0"
+                            (selected)="onSupplierSelected($event)"
+                            [initialValue]="order?.supplier?.name"
+                        ></ng2-completer>
+                    </div>
+                  </div>
+
+                <div class="form-group">
                   <label class="col-sm-2 control-label">Order Status</label>
                   <div class="col-sm-10">
                     <div class="dropdown" style="width:200px;">
@@ -47,7 +63,7 @@
                 <div class="form-group" >
                   <label class="col-sm-2 control-label">Notes</label>
                   <div class="col-sm-10">
-                    <textarea class="form-control" placeholder="Notes" rows="2" name="notes" #notes="ngModel" class="form-control" [ngModel]="order?.notes"  (ngModelChange)="order.notes=$event">
+                    <textarea class="form-control" placeholder="Notes" rows="2" name="notes" #notes="ngModel" [ngModel]="order?.notes"  (ngModelChange)="order.notes=$event">
                     </textarea>
                     <span class="help-block">Order Notes</span>
                   </div>
@@ -96,6 +112,23 @@
                         <label class="control-label">Total Customer Spend: </label>
                         <span class="form-control-static row-data">{{wooCustomer?.total_spent | currency:'USD':true:'1.2-2'}}</span>
                     </div>
+                  </div>
+                </div>
+                <div class="form-group" >
+                  <label class="col-sm-2 control-label">Company: </label>
+                  <div class="col-sm-10">
+                    <span class="form-control-static row-data">{{wooOrder?.shipping?.company}}</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Shipping Address: </label>
+                  <div class="col-sm-10">
+                    <div class="form-control-static row-data">{{wooOrder?.shipping?.address_1}}</div>
+                    <div class="form-control-static row-data">{{wooOrder?.shipping?.address_2}}</div>
+                    <span class="form-control-static row-data">{{wooOrder?.shipping?.city}} ,</span>
+                    <span class="form-control-static row-data">{{wooOrder?.shipping?.state}}</span>
+                    <span class="form-control-static row-data">{{wooOrder?.shipping?.postcode}}</span>
                   </div>
                 </div>
 

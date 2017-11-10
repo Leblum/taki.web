@@ -14,7 +14,7 @@ export interface IOrder extends IBaseModel {
     status: enums.OrderStatus,
     wooOrderNumber?: string,
     wooCustomerId?: string,
-    supplier?: ISupplier,
+    supplier?: ISupplier | string,
     subtotal?: number,
     tax?: number,
     total?: number,
