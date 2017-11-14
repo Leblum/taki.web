@@ -14,8 +14,16 @@
         <div class="form-group">
           <label class="col-sm-2 control-label">Product</label>
           <div class="col-sm-10">
-            <ng2-completer #productDDL inputClass="form-control dropdown" name="productDDL" required [(ngModel)]="searchStr" [datasource]="dataService"
-              [minSearchLength]="0" (selected)="onProductSelected($event)" [initialValue]="orderItem?.product?.displayName"></ng2-completer>
+            <ng2-completer 
+            #productDDL 
+            inputClass="form-control dropdown" 
+            name="productDDL" 
+            required 
+            [(ngModel)]="searchStr" 
+            [datasource]="dataService"
+            [minSearchLength]="0" 
+            (selected)="onProductSelected($event)" 
+            ></ng2-completer>
           </div>
         </div>
 

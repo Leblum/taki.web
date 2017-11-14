@@ -18,7 +18,7 @@ export interface ProductSearchData{
   styleUrls: []
 })
 
-export class OrderItemDetailComponent implements OnInit, AfterViewInit {
+export class OrderItemDetailComponent implements OnInit {
 
   public order: IOrder;
   public orderItem: IOrderItem;
@@ -62,11 +62,6 @@ export class OrderItemDetailComponent implements OnInit, AfterViewInit {
       });
       this.dataService = this.completerService.local(this.searchData, 'displayName,commonName', 'displayName');    
     });
-  }
-
-  ngAfterViewInit(): void {
-    console.log('In after view init');
-
   }
 
   public onProductSelected(selected: any) {
