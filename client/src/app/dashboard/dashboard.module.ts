@@ -17,6 +17,8 @@ import { SupplierDetailComponent } from './suppliers/supplier-detail/supplier-de
 import { OrderDetailComponent } from './orders/order-detail/order-detail.component';
 import { OrderListComponent } from './orders/order-list/order-list.component';
 import { Ng2CompleterModule } from "ng2-completer";
+import { OrderItemDetailComponent } from './orders/order-item-detail/order-item-detail.component';
+import { OrderItemGridComponent } from './orders/order-item-grid/order-item-grid.component';
 
 @NgModule({
     imports: [
@@ -37,7 +39,9 @@ import { Ng2CompleterModule } from "ng2-completer";
         SupplierListComponent,
         SupplierDetailComponent,
         OrderDetailComponent,
-        OrderListComponent
+        OrderListComponent,
+        OrderItemDetailComponent,
+        OrderItemGridComponent
     ]
 })
 

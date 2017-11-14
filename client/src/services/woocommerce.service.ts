@@ -38,7 +38,6 @@ export class WooCommerceService extends BaseService<Order>{
         }
         headers.append('x-access-token',localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION));
 
-        console.log('about to hit woocommerce');
         let url = `/woo/${environment.WooApiLocation}${endpoint}/${id}?consumer_key=${environment.WooConsumerKey}&consumer_secret=${environment.WooConsumerSecret}`
         console.log(`About to send a woo request to: ${url}`);
         //console.dir(params.getAll('consumer_key'));
@@ -47,7 +46,6 @@ export class WooCommerceService extends BaseService<Order>{
                 headers: headers,
             })
             .map((res: Response) => {
-                console.dir(res.json());
                 return res.json();
             })
             .catch(this.handleError);

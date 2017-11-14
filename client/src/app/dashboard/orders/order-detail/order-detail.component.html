@@ -193,11 +193,18 @@
 
               </fieldset>
 
-              <fieldset>
-                  <legend>Items</legend>
-                  
-  
-                </fieldset>
+              <fieldset ngModelGroup="items">
+                <legend>Order Items</legend>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Actions</label>
+                    <button type="button" class="btn btn-fill btn-wd" (click)="addOrderItem()" >Add Order Item</button>
+                </div>
+
+                <app-order-item-grid [order]="order"></app-order-item-grid>
+
+                <app-order-item-detail></app-order-item-detail>
+
+              </fieldset>
 
               <fieldset>
                 <legend>Technical Details</legend>

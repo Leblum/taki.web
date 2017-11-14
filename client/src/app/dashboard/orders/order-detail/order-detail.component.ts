@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService, AlertService, WooCommerceService, SupplierService } from '../../../../services/index';
-import { IOrder,IEmail, ISupplier } from '../../../../models/index';
+import { IOrder,IEmail, ISupplier, IOrderItem } from '../../../../models/index';
 import { ErrorEventBus } from '../../../../event-buses/error.event-bus';
 import * as enums from '../../../../enumerations';
 import { DataTableDirective } from 'angular-datatables';
@@ -10,6 +10,7 @@ import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { Customer, Order } from '../../../../models/woo/index';
 import { CompleterService, CompleterData, CompleterCmp } from 'ng2-completer';
+import { OrderItemEventBus } from '../../../../event-buses/index';
 declare var $: any;
 
 export interface SupplierSearchData{
@@ -24,6 +25,7 @@ export interface SupplierSearchData{
   styleUrls: ['./order-detail.component.scss']
 })
 export class OrderDetailComponent implements OnInit {
+  [x: string]: any;
 // Commentary
   public currentOrderId: string;
   public order: IOrder;
@@ -51,6 +53,7 @@ export class OrderDetailComponent implements OnInit {
     private wooService: WooCommerceService,
     private completerService: CompleterService,
     private supplierService: SupplierService,
+    private orderItemEventBus: OrderItemEventBus
   ) {
     
   }
@@ -91,6 +94,12 @@ export class OrderDetailComponent implements OnInit {
         this.order.items = [];
       }
     });
+  }
+
+  addOrderItem(){
+    let orderItem:IOrderItem = {};
+    this.order.items.push(orderItem);
+    this.orderItemEventBus.editOrderItem(orderItem, this.order);
   }
 
   fetchOrder() {
