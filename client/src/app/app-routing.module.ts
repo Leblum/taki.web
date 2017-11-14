@@ -13,6 +13,7 @@ export const AppRoutes: Routes = [
       path: '',
       redirectTo: 'dashboard/overview',
       pathMatch: 'full',
+      canActivate: [AuthGuard],
   },
   { path: '', component: AdminLayoutComponent, 
     children: [{
