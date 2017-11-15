@@ -2,15 +2,22 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService, AlertService } from '../../../../services/index';
-import { IProduct } from '../../../../models/index';
+import { IProduct, ISupplier } from '../../../../models/index';
 import { ErrorEventBus } from '../../../../event-buses/error.event-bus';
 import { ProductType, EnumHelper, NotificationType, ImageType, ProductImageEventType } from '../../../../enumerations';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { ProductImageEventBus } from '../../../../event-buses/index';
+import { CompleterData, CompleterCmp, CompleterService } from 'ng2-completer';
+import { SupplierService } from '../../../../services/supplier.service';
 declare var $: any;
 
+export interface SupplierSearchData{
+  name: string,
+  slug: string,
+  id: string, 
+}
 
 @Component({
   selector: 'app-product-detail',
@@ -24,13 +31,23 @@ export class ProductDetailComponent implements OnInit {
   public selectPickerNeedsStartup: boolean;
   public tagsToAdd: string = '';
 
+  // Supplier Type ahead searching
+  public searchStr: string;
+  public dataService: CompleterData;
+  protected searchData: SupplierSearchData[] = null;
+  protected selectedSupplierId: string;
+  @ViewChild("supplierDDL") private supplierDropDown: CompleterCmp;
+
   public productTypes = EnumHelper.getSelectors(ProductType);
 
   constructor(private route: ActivatedRoute,
     private errorEventBus: ErrorEventBus,
     private productService: ProductService,
     private alertService: AlertService,
-    private productImageEventBus: ProductImageEventBus) {
+    private productImageEventBus: ProductImageEventBus,
+    private completerService: CompleterService,
+    private supplierService: SupplierService,
+  ) {
     this.productImageEventBus.productImageChanged$.subscribe((event) => {
       if (event.eventType === ProductImageEventType.uploaded) {
         this.fetchProduct();
@@ -50,6 +67,28 @@ export class ProductDetailComponent implements OnInit {
           isTemplate: true,
         }
       }
+
+      if(this.cProd.isTemplate === false){
+        this.setupSupplierDDL();
+      }
+    });
+  }
+
+  setupSupplierDDL(){
+    this.supplierService.getList().subscribe((suppliers: ISupplier[]) =>{
+      this.searchData = suppliers.map( supplier =>{
+        return { 
+          name: supplier.name,
+          slug: supplier.slug,
+          id: supplier._id, 
+        }
+      });
+      this.dataService = this.completerService.local(this.searchData, 'name,slug', 'name');    
+
+      if(this.cProd && this.cProd.supplier){
+        this.supplierDropDown.value = (this.cProd.supplier as ISupplier).name;
+        this.supplierDropDown.writeValue((this.cProd.supplier as ISupplier).name);
+      }
     });
   }
 
@@ -57,17 +96,21 @@ export class ProductDetailComponent implements OnInit {
     this.productService.get(this.currentProductId).subscribe((product: IProduct) => {
 
       this.cProd = product;
-      this.selectPickerNeedsStartup = true;
 
-      //  Init Bootstrap Select Picker
-      $(".selectpicker").selectpicker({
-        iconBase: "ti",
-        tickIcon: "ti-check"
-      });
-
+      this.initializeSelectPicker();
     }, error => {
       this.errorEventBus.throw(error);
     });
+  }
+
+  initializeSelectPicker(){
+    this.selectPickerNeedsStartup = true;
+    //  Init Bootstrap Select Picker
+    $(".selectpicker").selectpicker({
+      iconBase: "ti",
+      tickIcon: "ti-check"
+    });
+
   }
 
   saveProduct(changes: IProduct, isValid: boolean) {

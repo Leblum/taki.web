@@ -16,6 +16,8 @@ export interface ChildrenItems {
     title: string;
     ab: string;
     type?: string;
+    hasParameters?: boolean;
+    parameters?: any;
 }
 
 //Menu Items
@@ -33,7 +35,20 @@ export const ROUTES: RouteInfo[] = [{
         type: 'sub',
         icontype: 'ti-package',
         children: [
-            {path: 'list', title: 'Products', ab:'P'}
+            {
+                path: 'list', 
+                title: 'Product Templates', 
+                ab:'PT',
+                hasParameters: true,
+                parameters: { isTemplate: true }
+            },
+            {
+                path: 'list', 
+                title: 'Supplier Products', 
+                ab:'SP',
+                hasParameters: true,
+                parameters: { isTemplate: false }
+            }
         ]
     },{
         path: '/dashboard/suppliers',

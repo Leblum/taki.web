@@ -1,4 +1,4 @@
-import { IBaseModel } from "./index";
+import { IBaseModel, ISupplier } from "./index";
 import * as enums from "../enumerations";
 
 export interface IImage{
@@ -25,6 +25,7 @@ export interface IProduct extends IBaseModel {
         ownerId: string,
         ownershipType: enums.OwnershipType
     }[],
+    supplier?: ISupplier | string,
     displayName?: string,
     commonName?: string,
     shortDescription?: string,

@@ -21,7 +21,6 @@ export class BaseService<T extends IBaseModel> {
     protected identityApiBaseV1: string = `${environment.IdentityAPIBase}${environment.V1}`;
     protected productApiBaseV1: string = `${environment.ProductAPIBase}${environment.V1}`;
 
-
     // tslint:disable-next-line:member-ordering
     public static convertToClass<T>(obj: Object, classToInstantiate): T {
         for (const i in obj) {

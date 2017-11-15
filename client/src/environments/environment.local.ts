@@ -3,7 +3,7 @@ export const environment = {
     production: false,
     IdentityAPIBase: 'http://localhost:8080/api',
     V1: '/v1',
-    ProductAPIBase: 'http://localhost:9001/api',
+    ProductAPIBase: 'http://localhost:9000/api',
     WooConsumerKey: 'ck_d98c021485c82e711c53420f72d34e602ae1ad1b',
     WooConsumerSecret: 'cs_37d8a7cb7e932c5303a2dae67ed17cad4e620f3e',
     // curl https://leblum.com/wp-json/wc/v2/orders -u ck_d98c021485c82e711c53420f72d34e602ae1ad1b:cs_37d8a7cb7e932c5303a2dae67ed17cad4e620f3e

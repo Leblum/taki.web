@@ -65,10 +65,10 @@
                 <!--Display the submenu items-->
                 <div id="{{menuitem.title}}" class="collapse" *ngIf="menuitem.type === 'sub'">
                     <ul class="nav">
-                        <li routerLinkActive="active" *ngFor="let childitem of menuitem.children">
-                            <a [routerLink]="[menuitem.path, childitem.path]">
-                                <span class="sidebar-mini">{{childitem.ab}}</span>
-                                <span class="sidebar-normal">{{childitem.title}}</span>
+                        <li routerLinkActive="active" *ngFor="let childItem of menuitem.children">
+                            <a [routerLink]="childItem?.hasParameters ? [menuitem.path, childItem.path, childItem.parameters] : [menuitem.path, childItem.path]" >
+                                <span class="sidebar-mini">{{childItem.ab}}</span>
+                                <span class="sidebar-normal">{{childItem.title}}</span>
                             </a>
                         </li>
                     </ul>
