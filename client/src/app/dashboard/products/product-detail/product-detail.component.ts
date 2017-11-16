@@ -55,6 +55,14 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
+  public onSupplierSelected(selected: any) {
+    if (selected) {
+      this.cProd.supplier = selected.originalObject.id;
+    } else {
+      this.cProd.supplier = '';
+    }
+  }
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       // if there isn't an id then it's a new product.
@@ -67,10 +75,7 @@ export class ProductDetailComponent implements OnInit {
           isTemplate: true,
         }
       }
-
-      if(this.cProd.isTemplate === false){
-        this.setupSupplierDDL();
-      }
+      this.setupSupplierDDL();
     });
   }
 
@@ -84,11 +89,6 @@ export class ProductDetailComponent implements OnInit {
         }
       });
       this.dataService = this.completerService.local(this.searchData, 'name,slug', 'name');    
-
-      if(this.cProd && this.cProd.supplier){
-        this.supplierDropDown.value = (this.cProd.supplier as ISupplier).name;
-        this.supplierDropDown.writeValue((this.cProd.supplier as ISupplier).name);
-      }
     });
   }
 
@@ -98,6 +98,12 @@ export class ProductDetailComponent implements OnInit {
       this.cProd = product;
 
       this.initializeSelectPicker();
+
+      if(this.cProd && this.cProd.supplier){
+        this.supplierDropDown.value = (this.cProd.supplier as ISupplier).name;
+        this.supplierDropDown.writeValue((this.cProd.supplier as ISupplier).name);
+      }
+
     }, error => {
       this.errorEventBus.throw(error);
     });
@@ -156,8 +162,10 @@ export class ProductDetailComponent implements OnInit {
   }
 
   removeTag(tag: string): void {
-    let tagIndex = this.cProd.tags.indexOf(tag);
-    this.cProd.tags.splice(tagIndex, 1);
+    if(this.cProd.isTemplate){
+      let tagIndex = this.cProd.tags.indexOf(tag);
+      this.cProd.tags.splice(tagIndex, 1);
+    }
   }
 
   isTagInputEmpty(): boolean {

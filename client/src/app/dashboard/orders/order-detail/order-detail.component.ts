@@ -11,6 +11,8 @@ import { Observable } from 'rxjs/Observable';
 import { Customer, Order } from '../../../../models/woo/index';
 import { CompleterService, CompleterData, CompleterCmp } from 'ng2-completer';
 import { OrderItemEventBus } from '../../../../event-buses/index';
+import { OrderItemGridComponent } from '../order-item-grid/order-item-grid.component';
+import { OrderItemEventType } from '../../../../enumerations';
 declare var $: any;
 
 export interface SupplierSearchData{
@@ -25,7 +27,6 @@ export interface SupplierSearchData{
   styleUrls: ['./order-detail.component.scss']
 })
 export class OrderDetailComponent implements OnInit {
-  [x: string]: any;
 // Commentary
   public currentOrderId: string;
   public order: IOrder;
@@ -55,19 +56,24 @@ export class OrderDetailComponent implements OnInit {
     private supplierService: SupplierService,
     private orderItemEventBus: OrderItemEventBus
   ) {
-    
+    // orderItemEventBus.orderItemChanged$.subscribe(orderItemChanged =>{
+    //   if(orderItemChanged.eventType === OrderItemEventType.saved){
+    //     this.saveOrder(null,true);
+    //     this.fetchOrder();
+    //   }
+    // })
   }
 
   public onSupplierSelected(selected: any) {
     console.log('About to set the supplier ID.')
     if (selected) {
       console.log('Setting the supplierID');
-        this.order.supplier = selected.originalObject.id;
+      this.order.supplier = selected.originalObject.id;
     } else {
       console.log('Removing the supplier ID');
-        this.order.supplier = '';
+      this.order.supplier = '';
     }
-}
+  }
 
   ngOnInit() {
     this.supplierService.getList().subscribe((suppliers: ISupplier[]) =>{
@@ -98,7 +104,7 @@ export class OrderDetailComponent implements OnInit {
 
   addOrderItem(){
     let orderItem:IOrderItem = {};
-    this.order.items.push(orderItem);
+    //this.order.items.push(orderItem);
     this.orderItemEventBus.editOrderItem(orderItem, this.order);
   }
 
@@ -145,10 +151,7 @@ export class OrderDetailComponent implements OnInit {
       }
       // This is for when we're saving an existing order.
       else {
-        console.log('Current order supplierID ', this.order.supplier);
         this.orderService.update(this.order, this.order._id).subscribe(response => {
-
-          console.log(`Saved Order ${this.order._id}`);
 
           this.alertService.send({ text: `Order saved: ${this.order.code}`, notificationType: enums.NotificationType.success }, true);
 

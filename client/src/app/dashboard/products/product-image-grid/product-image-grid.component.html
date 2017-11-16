@@ -25,8 +25,8 @@
               <td>{{image.order}}</td>
               <td>{{image.isActive}}</td>
               <td>
-                  <button type="button" class="btn btn-simple btn-info btn-icon edit" title="Edit a image" (click)="editImage(image._id)"><i class="ti-pencil-alt"></i></button>
-                  <button type="button" class="btn btn-simple btn-danger btn-icon remove" title="Delete a image" (click)="deleteImage(image._id)"><i class="ti-close"></i></button>
+                  <button type="button" [disabled]="!product?.isTemplate" class="btn btn-simple btn-info btn-icon edit" title="Edit a image" (click)="editImage(image._id)"><i class="ti-pencil-alt"></i></button>
+                  <button type="button" [disabled]="!product?.isTemplate" class="btn btn-simple btn-danger btn-icon remove" title="Delete a image" (click)="deleteImage(image._id)"><i class="ti-close"></i></button>
               </td>
           </tr>
       </tbody>

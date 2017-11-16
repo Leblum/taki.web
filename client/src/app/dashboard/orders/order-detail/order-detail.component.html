@@ -116,8 +116,9 @@
                 </div>
                 <div class="form-group" >
                   <label class="col-sm-2 control-label">Company: </label>
-                  <div class="col-sm-10">
-                    <span class="form-control-static row-data">{{wooOrder?.shipping?.company}}</span>
+                  <!-- This is super annoying, but I'm not sure why this control won't line up.  Later something to clean out. -->
+                  <div class="col-sm-10" style="margin-top:12px">
+                    <span class="form-control-static">{{wooOrder?.shipping?.company}}</span>
                   </div>
                 </div>
 
@@ -202,7 +203,7 @@
 
                 <app-order-item-grid [order]="order"></app-order-item-grid>
 
-                <app-order-item-detail></app-order-item-detail>
+                <app-order-item-detail [order]="order"></app-order-item-detail>
 
               </fieldset>
 

@@ -110,7 +110,9 @@ export interface IProduct extends IBaseModel {
         bloomsPerStem?: string,
         lifespan?: string,
         season?: string,
-    }
+    },
+    //Virtual Property to use in the grid.
+    thumbnailUrl?: string,
     href?: string,
     createdBy?: string;
     modifiedBy?: string;

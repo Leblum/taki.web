@@ -71,6 +71,16 @@ export class BaseService<T extends IBaseModel> {
             .catch(this.handleError);
     }
 
+    query<T extends IBaseModel>(query: Object): Observable<T[]> {
+        const url = this.buildUrl({operation: 'query' });
+        return this.http
+            .post(url,query, this.requestOptions)
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
     delete<T extends IBaseModel>(id: string, query?: Object): Observable<void> {
         const url = this.buildUrl({ id, query });
         return this.http
@@ -127,7 +137,6 @@ export class BaseService<T extends IBaseModel> {
     protected buildUrl(configuration?: RestUrlConfigType): string {
         return this.restUrlBuilder.withConfig(configuration).build();
     }
-
 
     // The server will be sending this back:
     // response.json({

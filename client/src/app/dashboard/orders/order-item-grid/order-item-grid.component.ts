@@ -42,7 +42,9 @@ export class OrderItemGridComponent {
     private orderService: OrderService,
     private alertService: AlertService,
     private orderItemEventBus: OrderItemEventBus
-    ) {  }
+    ) {  
+      
+    }
 
   editItem(id: string) {
    let item = this.order.items.find(item =>{
