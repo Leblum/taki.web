@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService, AlertService, WooCommerceService, SupplierService } from '../../../../services/index';
-import { IOrder,IEmail, ISupplier, IOrderItem } from '../../../../models/index';
+import { IOrder,IEmail, ISupplier, IOrderItem, IProduct } from '../../../../models/index';
 import { ErrorEventBus } from '../../../../event-buses/error.event-bus';
 import * as enums from '../../../../enumerations';
 import { DataTableDirective } from 'angular-datatables';
@@ -13,6 +13,7 @@ import { CompleterService, CompleterData, CompleterCmp } from 'ng2-completer';
 import { OrderItemEventBus } from '../../../../event-buses/index';
 import { OrderItemGridComponent } from '../order-item-grid/order-item-grid.component';
 import { OrderItemEventType } from '../../../../enumerations';
+import { ProductUtil } from '../../../../classes/product.util';
 declare var $: any;
 
 export interface SupplierSearchData{
@@ -56,12 +57,11 @@ export class OrderDetailComponent implements OnInit {
     private supplierService: SupplierService,
     private orderItemEventBus: OrderItemEventBus
   ) {
-    // orderItemEventBus.orderItemChanged$.subscribe(orderItemChanged =>{
-    //   if(orderItemChanged.eventType === OrderItemEventType.saved){
-    //     this.saveOrder(null,true);
-    //     this.fetchOrder();
-    //   }
-    // })
+    orderItemEventBus.orderItemChanged$.subscribe(orderItemChanged =>{
+      if(orderItemChanged.eventType === OrderItemEventType.saved){
+        this.fetchOrder();
+      }
+    })
   }
 
   public onSupplierSelected(selected: any) {
@@ -104,8 +104,7 @@ export class OrderDetailComponent implements OnInit {
 
   addOrderItem(){
     let orderItem:IOrderItem = {};
-    //this.order.items.push(orderItem);
-    this.orderItemEventBus.editOrderItem(orderItem, this.order);
+    this.orderItemEventBus.addNewOrderItem(orderItem, this.order);
   }
 
   fetchOrder() {
@@ -128,6 +127,11 @@ export class OrderDetailComponent implements OnInit {
       });
 
       this.order = order;
+
+      for (let i = 0; i < order.items.length; i++) {
+        const orderItem = order.items[i];
+        ProductUtil.setThumbnailUrl(orderItem.product as IProduct);
+      }
 
       if(this.order && this.order.wooOrderNumber){
         this.getWooCommerceDetails();

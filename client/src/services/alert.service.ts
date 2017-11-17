@@ -8,7 +8,7 @@ import { NotificationType } from '../enumerations';
 
 @Injectable()
 export class AlertService {
-    private subject = new Subject<IMessage>();
+    public messages$ = new Subject<IMessage>();
     private keepAfterNavigationChange = false;
  
     constructor(private router: Router) {
@@ -20,7 +20,7 @@ export class AlertService {
                     this.keepAfterNavigationChange = false;
                 } else {
                     // clear alert
-                    this.subject.next();
+                    this.messages$.next();
                 }
             }
         });
@@ -28,15 +28,11 @@ export class AlertService {
  
     send(message: IMessage, showAfterNavigationChange = false) {
         this.keepAfterNavigationChange = showAfterNavigationChange;
-        this.subject.next(message);
+        this.messages$.next(message);
     }
 
     throw(error: AppError, showAfterNavigationChange = true){
         this.keepAfterNavigationChange = showAfterNavigationChange;
-        this.subject.next({ text: error.message, notificationType: NotificationType.danger});
-    }
-
-    getMessage(): Observable<IMessage> {
-        return this.subject.asObservable();
+        this.messages$.next({ text: error.message, notificationType: NotificationType.danger});
     }
 }

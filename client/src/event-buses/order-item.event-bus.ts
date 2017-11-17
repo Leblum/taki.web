@@ -18,13 +18,10 @@ export class OrderItemEventBus {
     
     public orderItemChanged$ = this.orderItemChangedSource.asObservable();
 
-    // Mostly managed by the order images component.
-    public orderItems: Array<IOrderItem>;
-
     constructor(private alertService: AlertService){};
 
-    public addOrderItem(orderItem: IOrderItem, order: IOrder) {
-        this.emitMessage(orderItem,OrderItemEventType.added, order);
+    public addNewOrderItem(orderItem: IOrderItem, order: IOrder) {
+        this.emitMessage(orderItem,OrderItemEventType.newAdded, order);
     }
 
     public editOrderItem(orderItem: IOrderItem, order: IOrder){

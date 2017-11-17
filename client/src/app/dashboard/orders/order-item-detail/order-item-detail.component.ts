@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { IImage, IImageVariation, IOrder, IOrderItem, IProduct, ISupplier } from '../../../../models/index';
-import { OrderItemEventBus } from '../../../../event-buses/index';
+import { OrderItemEventBus, ErrorEventBus } from '../../../../event-buses/index';
 import { NotificationType, OrderItemEventType } from '../../../../enumerations';
 import { OrderService, AlertService, ProductService } from '../../../../services/';
 import { CompleterData, CompleterCmp, CompleterService } from 'ng2-completer';
@@ -20,7 +20,7 @@ export interface ProductSearchData {
 
 export class OrderItemDetailComponent implements OnInit {
 
-  @Input() public order: IOrder;
+  public order: IOrder;
   public orderItem: IOrderItem;
   public products: IProduct[];
 
@@ -37,24 +37,31 @@ export class OrderItemDetailComponent implements OnInit {
     private alertService: AlertService,
     private productService: ProductService,
     private completerService: CompleterService,
-  ) { }
+    private errorEventBus: ErrorEventBus,
+  ) { 
+    orderItemEventBus.orderItemChanged$.subscribe(message =>{
+      if(message.eventType === OrderItemEventType.newAdded){
 
-  ngOnInit() {
+        this.orderItem = {};
+        this.order = message.relatedOrder;
+        this.getActiveProductsForSupplier();
 
-    this.orderItemEventBus.orderItemChanged$.subscribe(event => {
-      if (event.eventType === OrderItemEventType.edited) {
-        this.orderItem = event.orderItem;
-        this.order = event.relatedOrder;
-      }
-      
-      this.getActiveProductsForSupplier();
+      } else if(message.eventType === OrderItemEventType.edited){
 
-      if (this.orderItem && this.orderItem.product) {
-        console.log('About to initialize the typeahead drop down for products on order Items.')
-        this.productDropDown.value = (this.orderItem.product as IProduct).displayName;
-        this.productDropDown.writeValue((this.orderItem.product as IProduct).displayName);
+        this.orderItem = message.orderItem;
+        this.order = message.relatedOrder;
+        this.getActiveProductsForSupplier();
+
+        if (this.orderItem && this.orderItem.product) {
+          console.log('About to initialize the typeahead drop down for products on order Items.')
+          this.productDropDown.value = (this.orderItem.product as IProduct).displayName;
+          this.productDropDown.writeValue((this.orderItem.product as IProduct).displayName);
+        }
       }
     });
+  }
+
+  ngOnInit() {
   }
 
   public getActiveProductsForSupplier(){
@@ -99,12 +106,17 @@ export class OrderItemDetailComponent implements OnInit {
 
   saveOrderItem(changes: IImage, isValid: boolean) {
     if (isValid) {
-      this.order.items.push(this.orderItem);
-      // this.order.items.forEach((item) => {
-      //   if (item._id === this.orderItem._id) {
-      //     item = this.orderItem;
-      //   }
-      // });
+
+      // If this orderItem has an id then it's not new so we save it by replacing the original.
+      if(this.orderItem._id){
+        this.order.items.forEach((item) => {
+          if (item._id === this.orderItem._id) {
+            item = this.orderItem;
+          }
+        });
+      } else{
+        this.order.items.push(this.orderItem);
+      }
 
       this.orderService.update(this.order, this.order._id).subscribe(response => {
         this.alertService.send({ text: 'Successfully updated order item.', notificationType: NotificationType.success }, true);
@@ -114,6 +126,8 @@ export class OrderItemDetailComponent implements OnInit {
         // This will basically set the ngIf to false, and hide the control.
         this.orderItem = undefined;
         this.order = undefined;
+      }, error => {
+        this.errorEventBus.throw(error);
       });
     }
   }

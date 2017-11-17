@@ -16,7 +16,7 @@ export class AlertComponent {
     constructor(private alertService: AlertService) { }
 
     ngOnInit() {
-        this.alertService.getMessage().subscribe(message => {
+        this.alertService.messages$.subscribe(message => {
             if (message) {
                 $.notify({
                     icon: this.calculateIcon(message),

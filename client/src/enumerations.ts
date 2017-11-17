@@ -29,7 +29,7 @@ export enum ProductType{
 }
 
 export enum OrderItemEventType{
-    added = 1,
+    newAdded = 1,
     edited = 2, 
     saved = 3,
     removed = 4, 

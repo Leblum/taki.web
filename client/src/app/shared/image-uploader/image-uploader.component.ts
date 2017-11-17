@@ -72,18 +72,22 @@ export class ImageUploaderComponent implements OnInit {
   }
 
   startUpload(): void {
-    const event: UploadInput = {
-      type: 'uploadAll',
-      url: `${environment.ProductAPIBase}${environment.V1}${CONST.ep.PRODUCTS}/upload-images/${this.relatedId}`,
-      method: 'POST',
-      concurrency: this.formData.concurrency,
-      headers: {
-        //'Content-Type': enums.MimeType.MULTIPART,
-        'x-access-token': localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION)
-      },
-    };
-
-    this.uploadInput.emit(event);
+    if(!this.relatedId){
+      this.alertService.send({ text: 'You have to save the product before you can upload images.', notificationType: enums.NotificationType.warning }, true);
+    }else{
+      const event: UploadInput = {
+        type: 'uploadAll',
+        url: `${environment.ProductAPIBase}${environment.V1}${CONST.ep.PRODUCTS}/upload-images/${this.relatedId}`,
+        method: 'POST',
+        concurrency: this.formData.concurrency,
+        headers: {
+          //'Content-Type': enums.MimeType.MULTIPART,
+          'x-access-token': localStorage.getItem(CONST.CLIENT_TOKEN_LOCATION)
+        },
+      };
+  
+      this.uploadInput.emit(event);
+    }
   }
 
   cancelUpload(id: string): void {

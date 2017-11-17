@@ -9,6 +9,7 @@ import * as enums from '../../../../enumerations';
 import { NotificationType } from '../../../../enumerations';
 import 'datatables.net'
 import { forEach } from '@angular/router/src/utils/collection';
+import { ProductUtil } from '../../../../classes/product.util';
 declare let $: any;
 declare let swal: any;
 
@@ -99,7 +100,7 @@ export class ProductListComponent implements OnInit {
     }).subscribe(products=>{
       this.products = products;
       
-      this.setupImages();
+      ProductUtil.setThumbnailUrls(this.products);
 
       if (notifyUser) {
         this.alertService.send({ text: "Product List Refreshed", notificationType: NotificationType.success });
@@ -107,32 +108,6 @@ export class ProductListComponent implements OnInit {
     }, error => {
       this.errorEventBus.throw(error);
     });
-  }
-
-  setupImages(){
-    for (let i = 0; i < this.products.length; i++) {
-      const product = this.products[i];
-      if(product.images && product.images.length > 0){
-        // If we sort the product images on order, now we can just pull the lowest order image.
-        product.images = product.images.sort((a, b)=>{
-          return a.order - b.order;
-        });
-  
-        product.thumbnailUrl = this.getThumbnailUrl(product.images[0]);
-      }
-    }
-  }
-
-  getThumbnailUrl(image:IImage):string{
-    if (image) {
-      for (let i = 0; i < image.variations.length; i++) {
-        const variation = image.variations[i];
-        if(variation.type === enums.ImageType.thumbnail){
-          return variation.url;
-        }
-      }
-    }
-    return '';
   }
 
   refreshProducts() {
