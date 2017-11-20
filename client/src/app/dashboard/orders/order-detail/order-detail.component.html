@@ -110,7 +110,7 @@
                     </div>
                     <div class="col-sm-4">
                         <label class="control-label">Total Customer Spend: </label>
-                        <span class="form-control-static row-data">{{wooCustomer?.total_spent | currency:'USD':symbol:'1.2-2'}}</span>
+                        <span class="form-control-static row-data">{{wooCustomer?.total_spent | currency:'USD':'symbol':'1.2-2'}}</span>
                     </div>
                   </div>
                 </div>
@@ -162,9 +162,9 @@
                                 <td><a [href]="lineItem.permalink" target="_blank"><img [src]="lineItem?.image_url"/></a></td>
                                 <td>{{ lineItem.name }}</td>
                                 <td>{{ lineItem.product_id }}</td>
-                                <td>{{ lineItem.price | currency:'USD':symbol:'1.2-2'}}</td>
+                                <td>{{ lineItem.price | currency:'USD':'symbol':'1.2-2'}}</td>
                                 <td>{{ lineItem.quantity }}</td>
-                                <td>{{ lineItem.total | currency:'USD':symbol:'1.2-2'}}</td>
+                                <td>{{ lineItem.total | currency:'USD':'symbol':'1.2-2'}}</td>
                             </tr>
                         </tbody>
                     </table>

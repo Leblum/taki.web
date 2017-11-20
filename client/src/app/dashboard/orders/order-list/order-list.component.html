@@ -47,7 +47,7 @@
                                       <td>{{order.code}}</td>
                                       <td>{{order.statusName}}</td>
                                       <td>{{order.notes}}</td>
-                                      <td>{{order.total | currency:'USD':symbol:'1.2-2'}}</td>
+                                      <td>{{order.total | currency:'USD':'symbol':'1.2-2'}}</td>
                                       <td>{{order.supplier?.name}}</td>
                                       <td>
                                           <button class="btn btn-simple btn-info btn-icon edit" title="Edit a order" (click)="edit(order._id)"><i class="ti-pencil-alt"></i></button>
