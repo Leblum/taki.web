@@ -4,7 +4,6 @@
           <div class="col-md-12">
               <h4 class="title">Orders</h4>
               <p class="category">Edit and update all the orders in the system</p>
-
               <br>
               <div class="card">
                   <div class="card-content">
@@ -40,11 +39,13 @@
                                   </tr>
                               </tfoot>
                               <tbody>
-                                  <tr *ngFor="let order of orders">
-                                      <td><a style="cursor:pointer" (click)="edit(order._id)">{{order._id}}</a></td>
+                                  <tr *ngFor="let order of orders | callbackFilter: filterOrderStatus">
+                                      <td><a style="cursor:pointer" (click)="edit(order._id)">
+                                          {{order._id}}
+                                    </a></td>
                                       <td>{{order.orderNumber}}</td>
                                       <td>{{order.code}}</td>
-                                      <td>{{order.status}}</td>
+                                      <td>{{order.statusName}}</td>
                                       <td>{{order.notes}}</td>
                                       <td>{{order.total | currency:'USD':true:'1.2-2'}}</td>
                                       <td>{{order.supplier?.name}}</td>

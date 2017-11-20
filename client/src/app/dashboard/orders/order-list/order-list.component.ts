@@ -5,7 +5,7 @@ import { ErrorEventBus } from '../../../../event-buses/';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
-import { NotificationType } from '../../../../enumerations';
+import { NotificationType, OrderStatus, EnumHelper } from '../../../../enumerations';
 declare let $: any;
 declare let swal: any;
 
@@ -112,6 +112,13 @@ export class OrderListComponent implements OnInit {
     }, error => {
       this.errorEventBus.throw(error);
     });
+  }
+
+  filterOrderStatus(order:IOrder): boolean{
+    if(order && order.status){
+      order['statusName'] = OrderStatus[order.status];     
+      return true;
+    }
   }
 
   refreshOrders() {
