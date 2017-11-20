@@ -25,7 +25,7 @@
                     <td><a style="cursor:pointer" (click)="editItem(item._id)"><img height="75px" width="75px" [src]="item?.product?.thumbnailUrl" [alt]="item?.product?._id"/></a></td>
                     <td>{{item?.product?.displayName}}</td>
                     <td>{{item?.quantity}}</td>
-                    <td>{{item?.price | currency:'USD':true:'1.2-2' }}</td>
+                    <td>{{item?.price | currency:'USD':symbol:'1.2-2'}}</td>
                     <td>
                         <button type="button" class="btn btn-simple btn-info btn-icon edit" title="Edit a item" (click)="editItem(item._id)">
                             <i class="ti-pencil-alt"></i>
