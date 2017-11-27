@@ -49,15 +49,55 @@
 
                 <div class="form-group">
                   <label class="col-sm-2 control-label">Order Status</label>
-                  <div class="col-sm-10">
-                    <div class="dropdown" style="width:200px;">
-                        <select class="selectpicker" name="orderStatus" [ngModel]="order?.status" (ngModelChange)="order.status=$event" #orderStatus="ngModel" data-style="btn btn-info btn-block" title="Order Status" data-size="7">
-                            <option *ngFor="let orderStatus of orderStatuses" [value]="orderStatus.value" [selected]="order?.status == orderStatus.value">
-                                {{orderStatus.name}}
-                            </option>
-                        </select>
-                    </div>
+                  <div class="col-sm-2">
+                    <p class="form-control-static">{{ orderStatus[order?.status] }}</p>
                   </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Change Order Status</label>
+                   <!-- These are the buttons that move orders back -->
+                   <div class="col-sm-2" *ngIf="order?.status == orderStatus.sent" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusPrevious(orderStatus.entered)" >Move Order to Entered</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.accepted" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusPrevious(orderStatus.sent)" >Move Order to Sent</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.rejected" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusPrevious(orderStatus.sent)" >Move Order to Sent</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.pickedUp" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusPrevious(orderStatus.accepted)" >Move Order to Accepted</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.delivered" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusPrevious(orderStatus.pickedUp)" >Move Order to Picked Up</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.completed" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusPrevious(orderStatus.delivered)" >Move Order to Delivered</button>
+                  </div>
+                  <div  class="col-sm-2" >
+                    <span><-- {{ orderStatus[order?.status] }} --></span>
+                  </div>
+                  <!-- These are going forward in our workflow --> 
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.entered" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusNext(orderStatus.sent)" >Move Order to Sent</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.sent" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusNext(orderStatus.accepted)" >Move Order to Accepted</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.sent" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusNext(orderStatus.rejected)" >Move Order to Rejected</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.accepted" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusNext(orderStatus.pickedUp)" >Move Order to Picked Up</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.pickedUp" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusNext(orderStatus.delivered)" >Move Order to Delivered</button>
+                  </div>
+                  <div class="col-sm-2" *ngIf="order?.status == orderStatus.delivered" >
+                    <button type="button" class="btn btn-fill btn-wd" (click)="changeOrderStatusNext(orderStatus.completed)" >Move Order to Completed</button>
+                  </div>
+                 
                 </div>
 
                 <div class="form-group" >
@@ -159,7 +199,7 @@
                         </tfoot> -->
                         <tbody>
                             <tr *ngFor="let lineItem of wooOrder?.line_items">
-                                <td><a [href]="lineItem.permalink" target="_blank"><img [src]="lineItem?.image_url"/></a></td>
+                                <td><a [href]="lineItem.permalink" target="_blank"><img [src]="lineItem?.image_url" [alt]="lineItem.permalink"/></a></td>
                                 <td>{{ lineItem.name }}</td>
                                 <td>{{ lineItem.product_id }}</td>
                                 <td>{{ lineItem.price | currency:'USD':'symbol':'1.2-2'}}</td>
