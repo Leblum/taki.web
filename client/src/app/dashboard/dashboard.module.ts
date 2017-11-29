@@ -19,6 +19,8 @@ import { OrderListComponent } from './orders/order-list/order-list.component';
 import { Ng2CompleterModule } from "ng2-completer";
 import { OrderItemDetailComponent } from './orders/order-item-detail/order-item-detail.component';
 import { OrderItemGridComponent } from './orders/order-item-grid/order-item-grid.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+
 
 @NgModule({
     imports: [
@@ -28,7 +30,8 @@ import { OrderItemGridComponent } from './orders/order-item-grid/order-item-grid
         DataTablesModule,
         ImageUploaderModule,
         NgUploaderModule,
-        Ng2CompleterModule
+        Ng2CompleterModule,
+        NgxDatatableModule
     ],
     declarations: [
         OverviewComponent, 

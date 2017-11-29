@@ -6,6 +6,8 @@ export class RestUrlBuilder {
     protected id: string = null;
     protected operation: string = null;
     protected query: Object = null;
+    protected skip: number = null;
+    protected limit: number = null;
 
     constructor() {
         return this;
@@ -67,6 +69,18 @@ export class RestUrlBuilder {
             this.query = null;
         }
 
+        if (configuration.skip !== undefined) {
+            this.skip = configuration.skip;
+        } else {
+            this.skip = null;
+        }
+
+        if (configuration.limit !== undefined) {
+            this.limit = configuration.limit;
+        } else {
+            this.limit = null;
+        }
+
         return this;
     }
 
@@ -96,6 +110,13 @@ export class RestUrlBuilder {
         if (this.query !== null) {
             urlParts.push('?');
             urlParts.push(this.toQueryString(this.query));
+            if(this.skip !== null && this.limit !== null){
+                urlParts.push(`&skip=${this.skip}&limit=${this.limit}`)
+            }
+        }else{
+            if(this.skip !== null && this.limit !== null){
+                urlParts.push(`?skip=${this.skip}&limit=${this.limit}`)
+            }
         }
 
         return urlParts.join('');
@@ -154,4 +175,6 @@ export interface RestUrlConfigType {
     id?: string;
     operation?: string;
     query?: Object;
+    skip?: number;
+    limit?: number;
 };

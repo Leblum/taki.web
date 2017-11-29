@@ -28,6 +28,7 @@
     "@angular/platform-server": "^5.0.2",
     "@angular/router": "^5.0.2",
     "@ngui/map": "^0.18.3",
+    "@swimlane/ngx-datatable": "^11.1.2",
     "@types/googlemaps": "^3.26.14",
     "angular-datatables": "^4.4.1",
     "arrive": "^2.3.1",

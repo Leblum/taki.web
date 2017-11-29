@@ -6,22 +6,30 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { NotificationType, OrderStatus, EnumHelper } from '../../../../enumerations';
+import { TableColumn } from '@swimlane/ngx-datatable';
+
 declare let $: any;
 declare let swal: any;
 
 @Component({
   selector: 'app-order-list',
   templateUrl: './order-list.component.html',
-  styleUrls: []
+  styleUrls: ['./order-list.component.scss']
 })
 export class OrderListComponent implements OnInit {
-  public headers: string[] = ['Id', 'Number', 'Code', 'Status', 'Notes','Total', 'Supplier Name', 'Actions']
   public orders: IOrder[];
-  public orderTable;
-  dtOptions: DataTables.Settings = {};
-  @ViewChild(DataTableDirective)
-  dtElement: DataTableDirective;
-  dtTrigger: Subject<any> = new Subject();
+
+  public rows = [];
+  columns :TableColumn[] = [
+    { prop: '_id', name: 'Id'},
+    { name: 'Number', prop: 'orderNumber'},
+    { name: 'Code'},
+    { name: 'Status'},
+    { name: 'Notes'},
+    { name: 'Total'},
+    { name: 'Supplier Name', prop: 'supplier.name'},
+    { name: 'Actions', prop: '_id'},
+  ];
 
   constructor(public orderService: OrderService, private alertService: AlertService, private errorEventBus: ErrorEventBus, private router: Router) { }
 
@@ -31,19 +39,6 @@ export class OrderListComponent implements OnInit {
     // This will scroll us back up to the top when you navigate back to this page from detail views.
     this.router.events.filter(event => event instanceof NavigationEnd).subscribe(() => {
       window.scrollTo(0, 0);
-    });
-  }
-
-  ngAfterViewInit(): void {
-    this.dtTrigger.next();
-  }
-
-  rerenderDataTable(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
     });
   }
 
@@ -98,14 +93,7 @@ export class OrderListComponent implements OnInit {
     // When this control starts, go get the entities.
     this.orderService.getList<IOrder>().subscribe(orders => {
       this.orders = orders;
-      this.rerenderDataTable();
-      this.dtOptions = {
-        pagingType: 'full_numbers',
-        search: {
-          searchPlaceholder: 'Search Orders',
-          caseInsensitive: true
-        }
-      };
+      this.setupVirtuals();
       if (notifyUser) {
         this.alertService.send({ text: "Order List Refreshed", notificationType: NotificationType.success });
       }
@@ -114,11 +102,15 @@ export class OrderListComponent implements OnInit {
     });
   }
 
-  filterOrderStatus(order:IOrder): boolean{
-    if(order && order.status){
-      order['statusName'] = OrderStatus[order.status];     
-      return true;
+  setupVirtuals(){
+    for (let i = 0; i < this.orders.length; i++) {
+      const order = this.orders[i];
+      order['statusName'] = OrderStatus[order.status];
     }
+  }
+
+  editSupplier(id:string){
+    this.router.navigate(['dashboard/suppliers/detail/', id]);
   }
 
   refreshOrders() {

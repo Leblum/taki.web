@@ -12,52 +12,48 @@
                               <button class="btn btn-primary" (click)="createOrder()">New</button>
                               <button class="btn btn-primary btn-icon" (click)="refreshOrders()"><i class="ti-exchange-vertical"></i>&nbsp;Refresh</button>
                       </div>
-                      <div class="fresh-table">
-                          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" id="productTable" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
-                              <thead>
-                                  <tr>
-                                      <th>{{ headers[0] }}</th>
-                                      <th>{{ headers[1] }}</th>
-                                      <th>{{ headers[2] }}</th>
-                                      <th>{{ headers[3] }}</th>
-                                      <th>{{ headers[4] }}</th>
-                                      <th>{{ headers[5] }}</th>
-                                      <th>{{ headers[6] }}</th>
-                                      <th class="disabled-sorting">{{ headers[7] }}</th>
-                                  </tr>
-                              </thead>
-                              <tfoot>
-                                  <tr>
-                                      <th>{{ headers[0] }}</th>
-                                      <th>{{ headers[1] }}</th>
-                                      <th>{{ headers[2] }}</th>
-                                      <th>{{ headers[3] }}</th>
-                                      <th>{{ headers[4] }}</th>
-                                      <th>{{ headers[5] }}</th>
-                                      <th>{{ headers[6] }}</th>
-                                      <th>{{ headers[7] }}</th>
-                                  </tr>
-                              </tfoot>
-                              <tbody>
-                                  <tr *ngFor="let order of orders | callbackFilter: filterOrderStatus">
-                                      <td><a style="cursor:pointer" (click)="edit(order._id)">
-                                          {{order._id}}
-                                    </a></td>
-                                      <td>{{order.orderNumber}}</td>
-                                      <td>{{order.code}}</td>
-                                      <td>{{order.statusName}}</td>
-                                      <td>{{order.notes}}</td>
-                                      <td>{{order.total | currency:'USD':'symbol':'1.2-2'}}</td>
-                                      <td>{{order.supplier?.name}}</td>
-                                      <td>
-                                          <button class="btn btn-simple btn-info btn-icon edit" title="Edit a order" (click)="edit(order._id)"><i class="ti-pencil-alt"></i></button>
-                                          <button class="btn btn-simple btn-danger btn-icon remove" title="Delete a order" (click)="delete(order._id)"><i class="ti-close"></i></button>
-                                          <button class="btn btn-simple btn-warning btn-icon" title="Approve/Unaprove a order" (click)="approveOrder(order)"><i [class.ti-check]="!order.isApproved" [class.ti-flag]="order.isApproved" ></i></button>
-                                      </td>
-                                  </tr>
-                              </tbody>
-                          </table>
-                      </div>
+                      <ngx-datatable
+                      class="bootstrap"
+                      [rows]="orders"
+                      [loadingIndicator]="loadingIndicator"
+                      [columnMode]="'force'"
+                      [headerHeight]="50"
+                      [footerHeight]="50"
+                      [rowHeight]="'auto'"
+                      [reorderable]="reorderable"
+                      [limit]="10">
+                      <ngx-datatable-column name="Id" prop="_id" [width]="200">
+                            <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <a style="cursor:pointer" (click)="edit(value)">
+                                            {{value}}
+                                      </a>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Number" prop="orderNumber" [width]="150"></ngx-datatable-column>
+                        <ngx-datatable-column name="Code" [width]="150"></ngx-datatable-column>
+                        <ngx-datatable-column name="Status" prop="statusName" [width]="150"></ngx-datatable-column>
+                        <ngx-datatable-column name="Notes" ></ngx-datatable-column>
+                        <ngx-datatable-column name="Supplier Name" prop="supplier">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                        <a style="cursor:pointer" (click)="editSupplier(value._id)">
+                                                {{value.name}}
+                                          </a>
+                                </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Total">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                        {{value | currency:'USD':'symbol':'1.2-2'}}
+                                </ng-template>
+                        </ngx-datatable-column>
+                    <ngx-datatable-column name="Actions" prop="_id" >
+                        <ng-template let-value="value" ngx-datatable-cell-template>
+                                <button class="btn btn-simple btn-info btn-icon edit" title="Edit a order" (click)="edit(value)"><i class="ti-pencil-alt"></i></button>
+                                <button class="btn btn-simple btn-danger btn-icon remove" title="Delete a order" (click)="delete(value)"><i class="ti-close"></i></button>
+                                <button class="btn btn-simple btn-warning btn-icon" title="Approve/Unaprove a order" (click)="approveOrder(value)"><i></i></button>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    </ngx-datatable>
+
                   </div>
                   <!-- end content-->
               </div>

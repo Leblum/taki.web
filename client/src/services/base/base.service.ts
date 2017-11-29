@@ -61,8 +61,8 @@ export class BaseService<T extends IBaseModel> {
             .catch(this.handleError);
     }
 
-    getList<T extends IBaseModel>(query?: Object): Observable<T[]> {
-        const url = this.buildUrl({ query });
+    getList<T extends IBaseModel>(query?: Object, skip?: number, limit?:number): Observable<T[]> {
+        const url = this.buildUrl({ query, skip:skip, limit:limit });
         return this.http
             .get(url, this.requestOptions)
             .map((res: Response) => {
@@ -71,12 +71,13 @@ export class BaseService<T extends IBaseModel> {
             .catch(this.handleError);
     }
 
-    query<T extends IBaseModel>(query: Object): Observable<T[]> {
-        const url = this.buildUrl({operation: 'query' });
+    query<T extends IBaseModel>(query: Object, skip?: number, limit?:number): Observable<T[]> {
+        const url = this.buildUrl({operation: 'query', skip:skip, limit:limit });
         return this.http
             .post(url,query, this.requestOptions)
             .map((res: Response) => {
-                return res.json();
+                // TODO: Clean this up to return the correct model object an observable of query response which will have paging in it.
+                return res.json()['results'];
             })
             .catch(this.handleError);
     }
