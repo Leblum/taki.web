@@ -12,7 +12,7 @@ import { Customer, Order } from '../../../../models/woo/index';
 import { CompleterService, CompleterData, CompleterCmp } from 'ng2-completer';
 import { OrderItemEventBus } from '../../../../event-buses/index';
 import { OrderItemGridComponent } from '../order-item-grid/order-item-grid.component';
-import { OrderItemEventType } from '../../../../enumerations';
+import { OrderItemEventType, OrderStatus } from '../../../../enumerations';
 import { ProductUtil } from '../../../../classes/product.util';
 declare var $: any;
 
@@ -44,7 +44,7 @@ export class OrderDetailComponent implements OnInit {
   @ViewChild("supplierDDL") private supplierDropDown: CompleterCmp;
 
   public selectPickerNeedsStartup: boolean = true;
-  public orderStatuses = enums.EnumHelper.getSelectors(enums.OrderStatus);
+  public orderStatus = enums.OrderStatus;
   // We need to setup a workflow for orders.
   //public currentOrderStatus = this.order && this.order.status ? this.order.status : enums.OrderStatus.entered;
 
@@ -62,6 +62,33 @@ export class OrderDetailComponent implements OnInit {
         this.fetchOrder();
       }
     })
+  }
+
+  // entered = 1,
+  // sent = 2,
+  // accepted = 3,
+  // rejected = 4,
+  // pickedUp = 5,
+  // delivered = 6,
+  // completed = 7
+  changeOrderStatusNext(destinationStatus: OrderStatus){
+    this.order.status = destinationStatus;
+    this.orderService.update(this.order,this.order._id)
+    .flatMap(order =>{
+      return this.orderService.moveOrderForward(this.order, destinationStatus);
+    })
+    .subscribe(order =>{
+      this.order = order;
+      this.fetchOrder();
+    });
+  }
+
+  changeOrderStatusPrevious(destinationStatus: OrderStatus){
+    this.order.status = destinationStatus;
+    this.orderService.update(this.order,this.order._id)
+    .subscribe(order =>{
+      this.order = order;
+    });
   }
 
   public onSupplierSelected(selected: any) {
@@ -158,6 +185,8 @@ export class OrderDetailComponent implements OnInit {
         this.orderService.update(this.order, this.order._id).subscribe(response => {
 
           this.alertService.send({ text: `Order saved: ${this.order.code}`, notificationType: enums.NotificationType.success }, true);
+
+          this.order = response;
 
         }, error => {
           this.errorEventBus.throw(error);
