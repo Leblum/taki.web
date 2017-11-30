@@ -20,7 +20,7 @@ declare var $: any;
 
 export class NavbarComponent implements OnInit{
     private listTitles: any[];
-    location: Location;
+    public location: Location;
     private nativeElement: Node;
     private toggleButton;
     private sidebarVisible: boolean;
@@ -28,10 +28,16 @@ export class NavbarComponent implements OnInit{
 
     @ViewChild("navbar-cmp") button;
 
-    constructor(location:Location,private router: Router, private renderer : Renderer, private element : ElementRef, private authenticationService: AuthenticationService) {
+    constructor(location:Location,
+        private router: Router,
+        private renderer : Renderer,
+        private element : ElementRef,
+        private authenticationService: AuthenticationService) {
+
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
+
     }
 
     logout(){
@@ -92,12 +98,14 @@ export class NavbarComponent implements OnInit{
         body.classList.add('nav-open');
         this.sidebarVisible = true;
     }
+
     sidebarClose(){
         var body = document.getElementsByTagName('body')[0];
         this.toggleButton.classList.remove('toggled');
         this.sidebarVisible = false;
         body.classList.remove('nav-open');
     }
+
     sidebarToggle(){
         // var toggleButton = this.toggleButton;
         // var body = document.getElementsByTagName('body')[0];
@@ -106,27 +114,6 @@ export class NavbarComponent implements OnInit{
         } else {
             this.sidebarClose();
         }
-    }
-
-    getTitle(){
-        var titlee = this.location.prepareExternalUrl(this.location.path());
-        if(titlee.charAt(0) === '#'){
-            titlee = titlee.slice( 2 );
-        }
-        for(var item = 0; item < this.listTitles.length; item++){
-            var parent = this.listTitles[item];
-            if(parent.path === titlee){
-                return parent.title;
-            }else if(parent.children){
-                var children_from_url = titlee.split("/")[2];
-                for(var current = 0; current < parent.children.length; current++){
-                    if(parent.children[current].path === children_from_url ){
-                        return parent.children[current].title;
-                    }
-                }
-            }
-        }
-        return 'Dashboard';
     }
 
     getPath(){
