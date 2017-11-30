@@ -15,12 +15,10 @@
                       <ngx-datatable
                       class="bootstrap"
                       [rows]="orders"
-                      [loadingIndicator]="loadingIndicator"
                       [columnMode]="'force'"
                       [headerHeight]="50"
                       [footerHeight]="50"
                       [rowHeight]="'auto'"
-                      [reorderable]="reorderable"
                       [limit]="10">
                       <ngx-datatable-column name="Id" prop="_id" [width]="200">
                             <ng-template let-value="value" ngx-datatable-cell-template>

@@ -28,7 +28,7 @@ export class IdentityApiService extends BaseService {
             const token = await new IdentityApiService(CONST.ep.AUTHENTICATE).authenticateUser("system@leblum.com", Config.active.get('systemUserPassword'));
             
             // We're just going to decode the token.  DON'T just trust tokens from anyone.  This isn't from a user, it's from our 
-            // identity service.
+            // identity service, and stored server side.  Don't copy this code unless you know what you're doing.
             let decoded: ITokenPayload = jwt.decode(token);
 
             this.currentSystemToken = token;
