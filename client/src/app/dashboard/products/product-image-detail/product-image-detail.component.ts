@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IImage, IImageVariation, IProduct } from '../../../../models/index';
 import { ProductImageEventBus } from '../../../../event-buses/index';
-import { ProductImageEventType, NotificationType } from '../../../../enumerations';
+import { ProductImageEventType, AlertType } from '../../../../enumerations';
 import { ProductService, AlertService } from '../../../../services/';
 
 @Component({
@@ -44,7 +44,7 @@ export class ProductImageDetailComponent implements OnInit {
       });
 
       this.productService.update(this.product, this.product._id).subscribe(response => {
-        this.alertService.send({ text: 'Successfully updated product image.', notificationType: NotificationType.success }, true);
+        this.alertService.send({ text: 'Successfully updated product image.', notificationType: AlertType.success }, true);
       });
 
       this.imageEventBus.saveProductImage(currentImage, this.product);

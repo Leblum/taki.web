@@ -175,7 +175,7 @@ export class OrderDetailComponent implements OnInit {
         this.orderService.create(this.order).subscribe(response => {
           this.order = response;
           this.currentOrderId = this.order._id;
-          this.alertService.send({ text: `Order created: ${this.order.code}`, notificationType: enums.NotificationType.success }, true);
+          this.alertService.send({ text: `Order created: ${this.order.code}`, notificationType: enums.AlertType.success }, true);
         }, error => {
           this.errorEventBus.throw(error);
         });
@@ -184,7 +184,7 @@ export class OrderDetailComponent implements OnInit {
       else {
         this.orderService.update(this.order, this.order._id).subscribe(response => {
 
-          this.alertService.send({ text: `Order saved: ${this.order.code}`, notificationType: enums.NotificationType.success }, true);
+          this.alertService.send({ text: `Order saved: ${this.order.code}`, notificationType: enums.AlertType.success }, true);
 
           this.order = response;
 

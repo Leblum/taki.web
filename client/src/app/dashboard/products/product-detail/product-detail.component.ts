@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductService, AlertService } from '../../../../services/index';
 import { IProduct, ISupplier } from '../../../../models/index';
 import { ErrorEventBus } from '../../../../event-buses/error.event-bus';
-import { ProductType, EnumHelper, NotificationType, ImageType, ProductImageEventType } from '../../../../enumerations';
+import { ProductType, EnumHelper, AlertType, ImageType, ProductImageEventType } from '../../../../enumerations';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -126,7 +126,7 @@ export class ProductDetailComponent implements OnInit {
         this.productService.create(this.cProd).subscribe(response => {
           this.cProd = response;
           this.currentProductId = this.cProd._id;
-          this.alertService.send({ text: `Product created: ${this.cProd.displayName}`, notificationType: NotificationType.success }, true);
+          this.alertService.send({ text: `Product created: ${this.cProd.displayName}`, notificationType: AlertType.success }, true);
         }, error => {
           this.errorEventBus.throw(error);
         });
@@ -136,7 +136,7 @@ export class ProductDetailComponent implements OnInit {
         if (!this.isTagInputEmpty()) {
           this.alertService.send({
             text: `Product not saved, because tags were present, that weren't added. Add them before saving.`,
-            notificationType: NotificationType.warning
+            notificationType: AlertType.warning
           }, true);
         }
         else {
@@ -144,7 +144,7 @@ export class ProductDetailComponent implements OnInit {
 
             console.log(`Saved Product ${this.cProd._id}`);
 
-            this.alertService.send({ text: `Product saved: ${this.cProd.displayName}`, notificationType: NotificationType.success }, true);
+            this.alertService.send({ text: `Product saved: ${this.cProd.displayName}`, notificationType: AlertType.success }, true);
 
           }, error => {
             this.errorEventBus.throw(error);

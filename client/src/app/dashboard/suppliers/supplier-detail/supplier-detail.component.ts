@@ -64,7 +64,7 @@ export class SupplierDetailComponent implements OnInit {
         this.supplierService.create(this.supplier).subscribe(response => {
           this.supplier = response;
           this.currentSupplierId = this.supplier._id;
-          this.alertService.send({ text: `Supplier created: ${this.supplier.name}`, notificationType: enums.NotificationType.success }, true);
+          this.alertService.send({ text: `Supplier created: ${this.supplier.name}`, notificationType: enums.AlertType.success }, true);
         }, error => {
           this.errorEventBus.throw(error);
         });
@@ -75,7 +75,7 @@ export class SupplierDetailComponent implements OnInit {
 
           console.log(`Saved Supplier ${this.supplier._id}`);
 
-          this.alertService.send({ text: `Supplier saved: ${this.supplier.name}`, notificationType: enums.NotificationType.success }, true);
+          this.alertService.send({ text: `Supplier saved: ${this.supplier.name}`, notificationType: enums.AlertType.success }, true);
 
         }, error => {
           this.errorEventBus.throw(error);

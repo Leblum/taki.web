@@ -1,6 +1,6 @@
-import { NotificationType } from "../enumerations";
+import { AlertType } from "../enumerations";
 
 export interface IMessage {
     text: string,
-    notificationType: NotificationType
+    notificationType: AlertType
 }

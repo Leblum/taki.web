@@ -5,7 +5,7 @@ import { ErrorEventBus } from '../../../../event-buses/';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
-import { NotificationType, OrderStatus, EnumHelper } from '../../../../enumerations';
+import { AlertType, OrderStatus, EnumHelper } from '../../../../enumerations';
 import { TableColumn } from '@swimlane/ngx-datatable';
 
 declare let $: any;
@@ -17,7 +17,7 @@ declare let swal: any;
   styleUrls: ['./order-list.component.scss']
 })
 export class OrderListComponent implements OnInit {
-  public orders: IOrder[];
+  public orders: IOrder[] = []; // initializing it to an empty array prevents it from erroring on lenght is undefined.
 
   public rows = [];
   columns :TableColumn[] = [
@@ -77,7 +77,7 @@ export class OrderListComponent implements OnInit {
     }).then(() => {
       // Hit the order service, and delete it.
       this.orderService.delete(id).subscribe((response) => {
-        this.alertService.send({ text: "Order Successfully Deleted", notificationType: NotificationType.success });
+        this.alertService.send({ text: "Order Successfully Deleted", notificationType: AlertType.success });
         this.getOrders(false);
       }, error => {
         this.errorEventBus.throw(error);
@@ -95,7 +95,7 @@ export class OrderListComponent implements OnInit {
       this.orders = orders;
       this.setupVirtuals();
       if (notifyUser) {
-        this.alertService.send({ text: "Order List Refreshed", notificationType: NotificationType.success });
+        this.alertService.send({ text: "Order List Refreshed", notificationType: AlertType.success });
       }
     }, error => {
       this.errorEventBus.throw(error);

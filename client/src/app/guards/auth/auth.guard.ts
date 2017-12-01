@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { CONST } from '../../../constants';
 import { AlertService } from '../../../services/index';
-import { NotificationType } from '../../../enumerations';
+import { AlertType } from '../../../enumerations';
 import { ITokenPayload } from '../../../models/token-payload.interface';
 import * as moment from 'moment';
 @Injectable()
@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
                 return true;
             }
 
-            this.alertService.send({text: "Only admins are allowed in", notificationType: NotificationType.danger}, true);
+            this.alertService.send({text: "Only admins are allowed in", notificationType: AlertType.danger}, true);
             this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
             return false;
         }

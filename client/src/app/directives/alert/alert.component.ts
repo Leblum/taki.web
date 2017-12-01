@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from '../../../services/';
 import { IMessage } from '../../../classes/message.interface';
-import { NotificationType } from '../../../enumerations';
+import { AlertType } from '../../../enumerations';
 
 declare var $: any;
 
@@ -22,7 +22,7 @@ export class AlertComponent {
                     icon: this.calculateIcon(message),
                     message: message.text
                 }, {
-                        type: NotificationType[message.notificationType],
+                        type: AlertType[message.notificationType],
                         delay: this.calculateTimerDelay(message),
                         timer: this.calculateTimerDelay(message),
                         placement: {
@@ -37,13 +37,13 @@ export class AlertComponent {
     calculateTimerDelay(message: IMessage): number{
         if (message && message.notificationType) {
             switch (+message.notificationType) {
-                case NotificationType.danger:
+                case AlertType.danger:
                     return 5000;
-                case NotificationType.info:
+                case AlertType.info:
                     return 1000;
-                case NotificationType.warning:
+                case AlertType.warning:
                     return 5000;
-                case NotificationType.success:
+                case AlertType.success:
                     return 1000;
                 default:
                     return 1000;
@@ -54,13 +54,13 @@ export class AlertComponent {
     calculateIcon(message: IMessage) {
         if (message && message.notificationType) {
             switch (+message.notificationType) {
-                case NotificationType.danger:
+                case AlertType.danger:
                     return "ti-alert";
-                case NotificationType.info:
+                case AlertType.info:
                     return "ti-info";
-                case NotificationType.warning:
+                case AlertType.warning:
                     return "ti-bell";
-                case NotificationType.success:
+                case AlertType.success:
                     return "ti-check";
                 default:
                     break;

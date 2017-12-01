@@ -5,7 +5,7 @@ import { ErrorEventBus } from '../../../../event-buses/';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
-import { NotificationType } from '../../../../enumerations';
+import { AlertType } from '../../../../enumerations';
 declare let $: any;
 declare let swal: any;
 
@@ -56,14 +56,14 @@ export class SupplierListComponent implements OnInit {
     if (!supplier.isApproved) {
       supplier.isApproved = true;
       this.supplierService.update(supplier, supplier._id).subscribe(response => {
-        this.alertService.send({ text: "Supplier Successfully Approved", notificationType: NotificationType.success });
+        this.alertService.send({ text: "Supplier Successfully Approved", notificationType: AlertType.success });
         this.getSuppliers(false);
       });
     }
     else {
       supplier.isApproved = false;
       this.supplierService.update(supplier, supplier._id).subscribe(response => {
-        this.alertService.send({ text: "Supplier Successfully Un-Approved", notificationType: NotificationType.warning });
+        this.alertService.send({ text: "Supplier Successfully Un-Approved", notificationType: AlertType.warning });
         this.getSuppliers(false);
       });
     }
@@ -82,7 +82,7 @@ export class SupplierListComponent implements OnInit {
     }).then(() => {
       // Hit the supplier service, and delete it.
       this.supplierService.delete(id).subscribe((response) => {
-        this.alertService.send({ text: "Supplier Successfully Deleted", notificationType: NotificationType.success });
+        this.alertService.send({ text: "Supplier Successfully Deleted", notificationType: AlertType.success });
         this.getSuppliers(false);
       }, error => {
         this.errorEventBus.throw(error);
@@ -107,7 +107,7 @@ export class SupplierListComponent implements OnInit {
         }
       };
       if (notifyUser) {
-        this.alertService.send({ text: "Supplier List Refreshed", notificationType: NotificationType.success });
+        this.alertService.send({ text: "Supplier List Refreshed", notificationType: AlertType.success });
       }
     }, error => {
       this.errorEventBus.throw(error);

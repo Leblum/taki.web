@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
 import * as enums from '../../../../enumerations';
 //import { DataTableDirective } from 'angular-datatables';
-import { NotificationType } from '../../../../enumerations';
+import { AlertType } from '../../../../enumerations';
 import 'datatables.net'
 import { forEach } from '@angular/router/src/utils/collection';
 import { ProductUtil } from '../../../../classes/product.util';
@@ -77,7 +77,7 @@ export class ProductListComponent implements OnInit {
     }).then(() => {
       // Hit the product service, and delete it.
       this.productService.delete(id).subscribe((response) => {
-        this.alertService.send({ text: "Product Successfully Deleted", notificationType: NotificationType.success });
+        this.alertService.send({ text: "Product Successfully Deleted", notificationType: AlertType.success });
         this.getProducts(false);
       }, error => {
         this.errorEventBus.throw(error);
@@ -103,7 +103,7 @@ export class ProductListComponent implements OnInit {
       ProductUtil.setThumbnailUrls(this.products);
 
       if (notifyUser) {
-        this.alertService.send({ text: "Product List Refreshed", notificationType: NotificationType.success });
+        this.alertService.send({ text: "Product List Refreshed", notificationType: AlertType.success });
       }
     }, error => {
       this.errorEventBus.throw(error);

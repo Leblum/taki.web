@@ -21,6 +21,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ErrorEventBus, ProductImageEventBus, OrderItemEventBus } from '../event-buses/';
 import { WooCommerceService } from '../services/woocommerce.service';
+import { NotificationService } from '../services/notification.service';
 
 @NgModule({
     imports:      [
@@ -51,7 +52,8 @@ import { WooCommerceService } from '../services/woocommerce.service';
         OrderService,
         ProductImageEventBus,
         WooCommerceService,
-        OrderItemEventBus
+        OrderItemEventBus,
+        NotificationService
     ],
     bootstrap:    [ AppComponent ]
 })

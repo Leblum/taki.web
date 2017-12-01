@@ -5,7 +5,6 @@ import log = require('winston');
 import * as superagent from "superagent";
 import { IBaseModel } from '../../models/index';
 import { IdentityApiService } from '../index';
-import { AppError } from '../../../client/src/classes/app-error.class';
 
 export abstract class BaseService {
 
@@ -118,7 +117,7 @@ export abstract class BaseService {
                     .catch(err => this.errorHandler(err));
             }
             else{
-                throw(new AppError(`There was an error on delete single.  Your query didn't return just one result, or was an error.  Query ResponseBody: ${queryResponse.body}`))
+                throw(`There was an error on delete single.  Your query didn't return just one result, or was an error.  Query ResponseBody: ${queryResponse.body}`);
             }
         } catch (err) { this.errorHandler(err) }
     }

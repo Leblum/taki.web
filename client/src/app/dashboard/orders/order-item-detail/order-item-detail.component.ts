@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { IImage, IImageVariation, IOrder, IOrderItem, IProduct, ISupplier } from '../../../../models/index';
 import { OrderItemEventBus, ErrorEventBus } from '../../../../event-buses/index';
-import { NotificationType, OrderItemEventType } from '../../../../enumerations';
+import { AlertType, OrderItemEventType } from '../../../../enumerations';
 import { OrderService, AlertService, ProductService } from '../../../../services/';
 import { CompleterData, CompleterCmp, CompleterService } from 'ng2-completer';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
@@ -119,7 +119,7 @@ export class OrderItemDetailComponent implements OnInit {
       }
 
       this.orderService.update(this.order, this.order._id).subscribe(response => {
-        this.alertService.send({ text: 'Successfully updated order item.', notificationType: NotificationType.success }, true);
+        this.alertService.send({ text: 'Successfully updated order item.', notificationType: AlertType.success }, true);
 
         this.orderItemEventBus.saveOrderItem(this.orderItem, this.order);
         

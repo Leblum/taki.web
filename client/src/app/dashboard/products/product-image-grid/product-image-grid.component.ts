@@ -64,7 +64,7 @@ export class ProductImageGridComponent {
 
   deleteImage(id: string) {
     this.productService.deleteProductImage(this.product._id, id).subscribe(response => {
-      this.alertService.send({ text: `Product Images removed: ${this.product.displayName}`, notificationType: enums.NotificationType.success }, true);
+      this.alertService.send({ text: `Product Images removed: ${this.product.displayName}`, notificationType: enums.AlertType.success }, true);
 
       let remainingImages = this.product.images.filter((image) => {
         return image._id != id;

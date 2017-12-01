@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 import { IMessage } from '../classes/message.interface';
 import { AppError } from '../classes/app-error.class';
-import { NotificationType } from '../enumerations';
+import { AlertType } from '../enumerations';
 
 @Injectable()
 export class AlertService {
@@ -33,6 +33,6 @@ export class AlertService {
 
     throw(error: AppError, showAfterNavigationChange = true){
         this.keepAfterNavigationChange = showAfterNavigationChange;
-        this.messages$.next({ text: error.message, notificationType: NotificationType.danger});
+        this.messages$.next({ text: error.message, notificationType: AlertType.danger});
     }
 }

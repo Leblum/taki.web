@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from '../../../services';
 import { AlertService } from '../../../services';
-import { NotificationType } from '../../../enumerations';
+import { AlertType } from '../../../enumerations';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { IUser } from '../../../models/index';
 declare var $: any;
@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
                     this.router.navigate(['dashboard/overview']);
                 },
                 error => {
-                    this.alertService.send({text : error, notificationType : NotificationType.danger}, false);
+                    this.alertService.send({text : error, notificationType : AlertType.danger}, false);
                     this.loading = false;
                 }); 
         }
